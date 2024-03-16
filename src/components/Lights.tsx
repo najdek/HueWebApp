@@ -10,7 +10,46 @@ import { kelvinToRgb } from "@/app/colors";
 import { ctToHex } from "@/app/colors";
 import { lightOrDark } from "@/app/colors";
 
-import { Typography } from "@mui/material";
+import { Slider, styled } from "@mui/material";
+
+const CustomSlider = styled(Slider)({
+    color: '#00000000',
+    height: 4,
+    '& .MuiSlider-track': {
+      border: 'none',
+    },
+    '& .MuiSlider-thumb': {
+      height: 36,
+      width: 36,
+      backgroundColor: '#fff',
+      border: '2px solid currentColor',
+      '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
+        boxShadow: 'inherit',
+      },
+      '&::before': {
+        display: 'none',
+      },
+    },
+    '& .MuiSlider-valueLabel': {
+      lineHeight: 1.2,
+      fontSize: 16,
+      background: 'unset',
+      padding: 0,
+      width: 32,
+      height: 32,
+      borderRadius: '50% 50% 50% 0',
+      backgroundColor: '#444',
+      transformOrigin: 'bottom left',
+      transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
+      '&::before': { display: 'none' },
+      '&.MuiSlider-valueLabelOpen': {
+        transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
+      },
+      '& > *': {
+        transform: 'rotate(45deg)',
+      },
+    },
+  });
 
 export function Light(o) {
   return (
@@ -25,9 +64,20 @@ export function Light(o) {
         </div>
       </div>
       <div
-        className={`min-h-6 w-full flex rounded-b-md bg-gradient-to-r from-gray-800 mb-4 ${o.isDark ? "text-white" : "text-black"}`}
+        className={`min-h-6 w-full flex rounded-b-md bg-gradient-to-r from-gray-800 mb-4 px-4 ${o.isDark ? "text-white" : "text-black"}`}
         style={{ backgroundColor: "#" + o.color }}
       >
+<CustomSlider
+  sx={{
+    '& input[type="range"]': {
+      WebkitAppearance: 'slider-horizontal',
+    },
+  }}
+  orientation="horizontal"
+  defaultValue={o.lightBrightness}
+  aria-label="Brightness"
+  valueLabelDisplay="auto"
+/>
         </div>
     </>
   );
@@ -61,6 +111,8 @@ export function DrawAllLights(o) {
       isDark = true;
     }
 
+    let lightBrightness = Math.round((thisLight.state.bri/255)*100);
+
     groups.push(
       <Light
         id={obj}
@@ -68,6 +120,7 @@ export function DrawAllLights(o) {
         color={hexcolor}
         name={thisLight.name}
         isDark={isDark}
+        lightBrightness={lightBrightness}
       ></Light>
     );
   }
