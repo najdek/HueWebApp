@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 export async function hueLightsGet() {
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
-  const apiUrl = "http://" + ip + "/api/" + bridgeAuth + "/lights/";
+  const apiUrl = "/hue-api-proxy/" + ip + "/" + bridgeAuth + "/lights/";
 
   const res = await fetch(apiUrl, {
     method: "GET",
