@@ -1,10 +1,18 @@
+"use client";
 import { ResponsiveAppBar } from "@/components/AppBar";
 import { Button, Container, Typography } from "@mui/material";
-import Link from "next/link";
-
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 
 export default function Home() {
+  const { push } = useRouter();
+  const bridgeIp = localStorage.getItem("bridgeIp") || "";
+  if (bridgeIp !== "") {
+    useEffect(() => {
+      push('/hue-main');
+   }, []);
+  }
   return (
       <main>
 <ResponsiveAppBar/>

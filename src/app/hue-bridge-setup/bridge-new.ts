@@ -1,7 +1,11 @@
 "use client";
-import useSWR from "swr";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
+import { Navigation } from "@mui/icons-material";
 async function getData(ip: string, ref: HTMLIFrameElement) {
+    const { push } = useRouter();
+
     const res = await fetch("http://" + ip + "/api", {
         method: "POST",
         body: JSON.stringify({"devicetype": "HueWebApp"})
@@ -12,6 +16,17 @@ async function getData(ip: string, ref: HTMLIFrameElement) {
         if (data[0].error.type == 101) {
             // link button not pressed
             ref.current.textContent = "Press the link button on your Bridge \nThen try to Connect again";
+        } else {
+            // unknown error
+            ref.current.textContent = "Error:\n" + JSON.stringify(data);
+        }
+    } else {
+        if (data[0].success) {
+            localStorage.setItem("bridgeIp", ip);
+            localStorage.setItem("bridgeAuth", data[0].success.username);
+            useEffect(() => {
+                push('/hue-main');
+             }, []);
         }
     }
 }
