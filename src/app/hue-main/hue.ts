@@ -15,3 +15,20 @@ export async function hueLightsGet() {
   console.log(data);
   return data;
 }
+
+
+
+export async function hueLightSetBrightness(lightid, bri, transitionTime) {
+    const ip = localStorage.getItem("bridgeIp");
+    const bridgeAuth = localStorage.getItem("bridgeAuth");
+    const apiUrl = "/hue-api-proxy/" + ip + "/" + bridgeAuth + "/lights/" + lightid + "/state";
+    const res = await fetch(apiUrl, {
+        method: "PUT",
+        body: JSON.stringify({"bri": bri, "transitionTime": transitionTime}),
+      });
+      const data = await res.json();
+      console.log(data);
+      return data;
+    }
+
+  
