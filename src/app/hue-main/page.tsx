@@ -25,7 +25,7 @@ export default function HueMain() {
         <ResponsiveAppBar/>
         <Container maxWidth="sm">
           <div className="mt-6">
-            <Typography variant="h5">Connected to: {localStorage.getItem("bridgeIp")}</Typography>
+            <Typography variant="h5">Lights</Typography>
           </div>
           <div>
             <DrawAllLights data={hueLightsData}></DrawAllLights>
