@@ -8,11 +8,13 @@ import { useRouter } from 'next/navigation';
 export default function Home() {
   const { push } = useRouter();
   const bridgeIp = localStorage.getItem("bridgeIp") || "";
-  if (bridgeIp !== "") {
     useEffect(() => {
+      if (bridgeIp !== "") {
+
       push('/hue-main');
+    }
    }, []);
-  }
+
   return (
       <main>
 <ResponsiveAppBar/>
