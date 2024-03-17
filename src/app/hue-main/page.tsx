@@ -40,7 +40,6 @@ export default function HueMain() {
 
   return (
     <main>
-      <ResponsiveAppBar />
       <Container maxWidth="lg">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div>

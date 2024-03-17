@@ -16,7 +16,6 @@ export default function HueBridgeSetupPage() {
   let bridgeNewOutput = useRef<HTMLIFrameElement>(null);
   return (
     <main>
-      <ResponsiveAppBar />
       <Container maxWidth="sm">
         <div className="my-8">
           <Typography variant="h5">Connect to your Hue Bridge</Typography>
