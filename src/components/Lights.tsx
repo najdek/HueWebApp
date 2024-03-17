@@ -135,6 +135,7 @@ export function Light(o) {
         style={{ backgroundColor: "#" + o.color }}
       >
         <CustomSlider
+          key={`bri-slider-light-${o.id}-${o.lightBrightness}`}
           sx={{
             '& input[type="range"]': {
               WebkitAppearance: "slider-horizontal",
@@ -152,53 +153,54 @@ export function Light(o) {
 }
 
 export function Group(o) {
-    const handleBrightnessChange = (event, newValue) => {
-      let newBri = Math.round((newValue * 255) / 100);
-      for (let i = 0; i < o.ids.length; i++) {
-        hueLightSetBrightness(o.ids[i], newBri, 200);
-      }
-    };
-    return (
-      <>
-        <div
-          className={`min-h-20 w-full flex rounded-t-md ${
-            o.isDark ? "text-white" : "text-black"
-          }`}
-          style={{ backgroundColor: "#" + o.color }}
-        >
-          <div className="flex justify-between items-center w-full min-h-max px-6">
-            <div className="inline-flex justify-start text-2xl font-medium">
-              {o.name}
-            </div>
-            <div className="inline-flex justify-end">
-              {/* buttons */}
-              <StyledSwitch checked={o.isOn} />
-            </div>
+  const handleBrightnessChange = (event, newValue) => {
+    let newBri = Math.round((newValue * 255) / 100);
+    for (let i = 0; i < o.ids.length; i++) {
+      hueLightSetBrightness(o.ids[i], newBri, 200);
+    }
+  };
+  return (
+    <>
+      <div
+        className={`min-h-20 w-full flex rounded-t-md ${
+          o.isDark ? "text-white" : "text-black"
+        }`}
+        style={{ backgroundColor: "#" + o.color }}
+      >
+        <div className="flex justify-between items-center w-full min-h-max px-6">
+          <div className="inline-flex justify-start text-2xl font-medium">
+            {o.name}
+          </div>
+          <div className="inline-flex justify-end">
+            {/* buttons */}
+            <StyledSwitch checked={o.isOn} />
           </div>
         </div>
-        {/* brightness slider */}
-        <div
-          className={`w-full flex rounded-b-md bg-gradient-to-r from-gray-800 mb-4 px-4 ${
-            o.isDark ? "text-white" : "text-black"
-          }`}
-          style={{ backgroundColor: "#" + o.color }}
-        >
-          <CustomSlider
-            sx={{
-              '& input[type="range"]': {
-                WebkitAppearance: "slider-horizontal",
-              },
-            }}
-            orientation="horizontal"
-            defaultValue={o.isOn ? o.lightBrightness : 0}
-            aria-label="Brightness"
-            valueLabelDisplay="auto"
-            onChangeCommitted={handleBrightnessChange}
-          />
-        </div>
-      </>
-    );
-  }
+      </div>
+      {/* brightness slider */}
+      <div
+        className={`w-full flex rounded-b-md bg-gradient-to-r from-gray-800 mb-4 px-4 ${
+          o.isDark ? "text-white" : "text-black"
+        }`}
+        style={{ backgroundColor: "#" + o.color }}
+      >
+        <CustomSlider
+          key={`bri-slider-group-${o.id}-${o.lightBrightness}`}
+          sx={{
+            '& input[type="range"]': {
+              WebkitAppearance: "slider-horizontal",
+            },
+          }}
+          orientation="horizontal"
+          defaultValue={o.isOn ? o.lightBrightness : 0}
+          aria-label="Brightness"
+          valueLabelDisplay="auto"
+          onChangeCommitted={handleBrightnessChange}
+        />
+      </div>
+    </>
+  );
+}
 
 export function DrawAllLights(o) {
   let data = o.data;
@@ -243,56 +245,53 @@ export function DrawAllLights(o) {
   return <>{groups}</>;
 }
 
-
-
 export function DrawAllGroups(o) {
-    let data = o.data;
-    console.log(data);
-    let groups = [];
-    for (var obj in data) {
-      let key = Object.keys(data).indexOf(obj);
-      let thisGroup = data[obj];
-      console.log(thisGroup);
-  
-      let groupType = thisGroup.type;
+  let data = o.data;
+  console.log(data);
+  let groups = [];
+  for (var obj in data) {
+    let key = Object.keys(data).indexOf(obj);
+    let thisGroup = data[obj];
+    console.log(thisGroup);
 
-      if ((groupType !== "Room") && (groupType !== "Zone")) {
-        continue;
-      }
+    let groupType = thisGroup.type;
 
-      let hexcolor, isDark;
-      if (thisGroup.action.colormode == "ct") {
-        hexcolor = ctToHex(thisGroup.action.ct);
-      } else if (thisGroup.action.colormode == "hs") {
-        hexcolor = hsvToRgb(thisGroup.action.hue, thisGroup.action.sat);
-      } else if (thisGroup.action.colormode == "xy") {
-        hexcolor = xyToRgb(thisGroup.action.xy[0], thisGroup.action.xy[1]);
-      }
-  
-      if (thisGroup.action.on == false) {
-        hexcolor = "999999";
-      }
-  
-      if (lightOrDark(hexcolor) == "light") {
-        isDark = false;
-      } else {
-        isDark = true;
-      }
-  
-      let lightBrightness = Math.round((thisGroup.action.bri / 255) * 100);
-
-      groups.push(
-        <Group
-          id={obj}
-          ids={thisGroup.lights}
-          isOn={thisGroup.action.on}
-          color={hexcolor}
-          name={thisGroup.name}
-          isDark={isDark}
-          lightBrightness={lightBrightness}
-        ></Group>
-      );
+    if (groupType !== "Room" && groupType !== "Zone") {
+      continue;
     }
-    return <>{groups}</>;
+
+    let hexcolor, isDark;
+    if (thisGroup.action.colormode == "ct") {
+      hexcolor = ctToHex(thisGroup.action.ct);
+    } else if (thisGroup.action.colormode == "hs") {
+      hexcolor = hsvToRgb(thisGroup.action.hue, thisGroup.action.sat);
+    } else if (thisGroup.action.colormode == "xy") {
+      hexcolor = xyToRgb(thisGroup.action.xy[0], thisGroup.action.xy[1]);
+    }
+
+    if (thisGroup.action.on == false) {
+      hexcolor = "999999";
+    }
+
+    if (lightOrDark(hexcolor) == "light") {
+      isDark = false;
+    } else {
+      isDark = true;
+    }
+
+    let lightBrightness = Math.round((thisGroup.action.bri / 255) * 100);
+
+    groups.push(
+      <Group
+        id={obj}
+        ids={thisGroup.lights}
+        isOn={thisGroup.action.on}
+        color={hexcolor}
+        name={thisGroup.name}
+        isDark={isDark}
+        lightBrightness={lightBrightness}
+      ></Group>
+    );
   }
-  
+  return <>{groups}</>;
+}
