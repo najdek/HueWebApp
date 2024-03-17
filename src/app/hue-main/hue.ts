@@ -16,6 +16,20 @@ export async function hueLightsGet() {
   return data;
 }
 
+export async function hueGroupsGet() {
+    const ip = localStorage.getItem("bridgeIp");
+    const bridgeAuth = localStorage.getItem("bridgeAuth");
+    const apiUrl = "/hue-api-proxy/" + ip + "/" + bridgeAuth + "/groups";
+  
+    const res = await fetch(apiUrl, {
+      method: "GET",
+    });
+    const data = await res.json();
+    // data is array of all groups
+    console.log(data);
+    return data;
+  }
+
 
 
 export async function hueLightSetBrightness(lightid, bri, transitionTime) {
