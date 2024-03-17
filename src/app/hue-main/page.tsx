@@ -14,6 +14,19 @@ export default function HueMain() {
       try {
         let newHueLightsData = await hueLightsGet();
         let newHueGroupsData = await hueGroupsGet();
+
+        // calculate average brightness for groups using data from lights fetch
+        for (let groupObj in newHueGroupsData) {
+          let thisGroup = newHueGroupsData[groupObj];
+          let groupBrightness = [];
+          for (let lightObj in thisGroup.lights) {
+            let thisLight = newHueLightsData[thisGroup.lights[lightObj]];
+              groupBrightness.push(thisLight.state.bri);
+          }
+          let averageBrightness = Math.round((groupBrightness.reduce((a, b) => a + b, 0) / groupBrightness.length));
+          newHueGroupsData[groupObj]["averageBrightness"] = averageBrightness;
+        }
+
         setHueLightsData(newHueLightsData);
         setHueGroupsData(newHueGroupsData);
 

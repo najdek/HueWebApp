@@ -229,7 +229,7 @@ export function DrawAllLights(o) {
       isDark = true;
     }
 
-    let lightBrightness = Math.round((thisLight.state.bri / 255) * 100);
+    let lightBrightness = Math.round(thisLight.state.bri / 255 * 100);
 
     groups.push(
       <Light
@@ -279,7 +279,7 @@ export function DrawAllGroups(o) {
       isDark = true;
     }
 
-    let lightBrightness = Math.round((thisGroup.action.bri / 255) * 100);
+    let lightBrightness = Math.round(thisGroup.averageBrightness / 255 * 100);
 
     groups.push(
       <Group
