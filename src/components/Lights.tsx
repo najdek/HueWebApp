@@ -12,7 +12,12 @@ import { lightOrDark } from "@/app/colors";
 
 import { Slider, styled, Switch } from "@mui/material";
 
-import { hueLightSetBrightness } from "@/app/hue-main/hue";
+import { hueLightSetBrightness, hueLightSetState } from "@/app/hue-main/hue";
+import { useState } from "react";
+
+import { Snackbar } from "@mui/material";
+import switchBaseClasses from "@mui/material/internal/switchBaseClasses";
+
 
 const CustomSlider = styled(Slider)({
   color: "#00000000",
@@ -105,10 +110,32 @@ const StyledSwitch = styled((props: SwitchProps) => (
 }));
 
 export function Light(o) {
+
+  const [snackbarText, setSnackbarText] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [switchChecked, setSwitchChecked] = useState(o.isOn);
+
+  const handleSnackbarClose = function() {
+    setSnackbarOpen(false);
+  }
+
   const handleBrightnessChange = (event, newValue) => {
     let newBri = Math.round((newValue * 255) / 100);
     hueLightSetBrightness(o.id, newBri, 200);
+    setSnackbarOpen(false);
+    setSnackbarText("Changing brightness of Light [" + o.name + "] to " + newValue + "%");
+    setSnackbarOpen(true);
   };
+
+  const handleSwitch = (event) => {
+    let newState = (event.target.checked);
+    setSwitchChecked(newState);
+    hueLightSetState(o.id, newState, 200);
+    setSnackbarOpen(false);
+    setSnackbarText("Toggling Light [" + o.name + "]. New state: " + (newState ? "ON" : "OFF"));
+    setSnackbarOpen(true);
+  }
+
   return (
     <>
       <div
@@ -123,7 +150,7 @@ export function Light(o) {
           </div>
           <div className="inline-flex justify-end">
             {/* buttons */}
-            <StyledSwitch checked={o.isOn} />
+            <StyledSwitch checked={switchChecked} onChange={handleSwitch} />
           </div>
         </div>
       </div>
@@ -148,17 +175,42 @@ export function Light(o) {
           onChangeCommitted={handleBrightnessChange}
         />
       </div>
+      <Snackbar autoHideDuration={800} open={snackbarOpen} onClose={handleSnackbarClose} message={snackbarText} />
+
     </>
   );
 }
 
 export function Group(o) {
+  const [snackbarText, setSnackbarText] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [switchChecked, setSwitchChecked] = useState(o.isOn);
+
+  const handleSnackbarClose = function() {
+    setSnackbarOpen(false);
+  }
+
   const handleBrightnessChange = (event, newValue) => {
     let newBri = Math.round((newValue * 255) / 100);
     for (let i = 0; i < o.ids.length; i++) {
       hueLightSetBrightness(o.ids[i], newBri, 200);
     }
+    setSnackbarOpen(false);
+    setSnackbarText("Changing brightness of Group [" + o.name + "] to " + newValue + "%");
+    setSnackbarOpen(true);
   };
+
+  const handleSwitch = (event) => {
+    let newState = (event.target.checked);
+    setSwitchChecked(newState);
+    for (let i = 0; i < o.ids.length; i++) {
+      hueLightSetState(o.ids[i], newState, 200);
+    }
+    setSnackbarOpen(false);
+    setSnackbarText("Toggling Group [" + o.name + "]. New state: " + (newState ? "ON" : "OFF"));
+    setSnackbarOpen(true);
+  }
+
   return (
     <>
       <div
@@ -173,7 +225,7 @@ export function Group(o) {
           </div>
           <div className="inline-flex justify-end">
             {/* buttons */}
-            <StyledSwitch checked={o.isOn} />
+            <StyledSwitch checked={switchChecked} onChange={handleSwitch} />
           </div>
         </div>
       </div>
@@ -198,6 +250,7 @@ export function Group(o) {
           onChangeCommitted={handleBrightnessChange}
         />
       </div>
+      <Snackbar autoHideDuration={800} open={snackbarOpen} onClose={handleSnackbarClose} message={snackbarText} />
     </>
   );
 }

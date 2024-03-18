@@ -1,13 +1,17 @@
 "use client";
 import { ResponsiveAppBar } from "@/components/AppBar";
-import { Button, Container, Typography } from "@mui/material";
+import { Button, Container, Typography, Snackbar } from "@mui/material";
 import { hueLightsGet, hueGroupsGet } from "./hue";
 import { DrawAllLights, DrawAllGroups } from "@/components/Lights";
 import { useEffect, useState } from "react";
 
+
 export default function HueMain() {
   const [hueLightsData, setHueLightsData] = useState([]);
   const [hueGroupsData, setHueGroupsData] = useState([]);
+  const [snackbarText, setSnackbarText] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -47,7 +51,7 @@ export default function HueMain() {
               <Typography variant="h5">Lights</Typography>
             </div>
             <div>
-              <DrawAllLights data={hueLightsData}></DrawAllLights>
+              <DrawAllLights data={hueLightsData} setSnackbarOpen={setSnackbarOpen} setSnackbarText={setSnackbarText} snackbarOpen={snackbarOpen} snackbarText={snackbarText}></DrawAllLights>
             </div>
           </div>
           <div>
