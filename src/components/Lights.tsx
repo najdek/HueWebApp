@@ -10,14 +10,16 @@ import { kelvinToRgb } from "@/app/colors";
 import { ctToHex } from "@/app/colors";
 import { lightOrDark } from "@/app/colors";
 
-import { Slider, styled, Switch } from "@mui/material";
+import { IconButton, Slider, styled, Switch } from "@mui/material";
 
 import { hueLightSetBrightness, hueLightSetState } from "@/app/hue-main/hue";
 import { useState } from "react";
 
 import { Snackbar } from "@mui/material";
 import switchBaseClasses from "@mui/material/internal/switchBaseClasses";
-
+import { ColorPicker, KelvinPicker } from "./IroPicker";
+import ColorLensIcon from "@mui/icons-material/ColorLens";
+import ContrastIcon from "@mui/icons-material/Contrast";
 
 const CustomSlider = styled(Slider)({
   color: "#00000000",
@@ -110,31 +112,36 @@ const StyledSwitch = styled((props: SwitchProps) => (
 }));
 
 export function Light(o) {
-
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [switchChecked, setSwitchChecked] = useState(o.isOn);
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
+  const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
 
-  const handleSnackbarClose = function() {
+  const handleSnackbarClose = () => {
     setSnackbarOpen(false);
-  }
+  };
 
   const handleBrightnessChange = (event, newValue) => {
     let newBri = Math.round((newValue * 255) / 100);
     hueLightSetBrightness(o.id, newBri, 200);
     setSnackbarOpen(false);
-    setSnackbarText("Changing brightness of Light [" + o.name + "] to " + newValue + "%");
+    setSnackbarText(
+      "Changing brightness of Light [" + o.name + "] to " + newValue + "%"
+    );
     setSnackbarOpen(true);
   };
 
   const handleSwitch = (event) => {
-    let newState = (event.target.checked);
+    let newState = event.target.checked;
     setSwitchChecked(newState);
     hueLightSetState(o.id, newState, 200);
     setSnackbarOpen(false);
-    setSnackbarText("Toggling Light [" + o.name + "]. New state: " + (newState ? "ON" : "OFF"));
+    setSnackbarText(
+      "Toggling Light [" + o.name + "]. New state: " + (newState ? "ON" : "OFF")
+    );
     setSnackbarOpen(true);
-  }
+  };
 
   return (
     <>
@@ -148,8 +155,22 @@ export function Light(o) {
           <div className="inline-flex justify-start text-2xl font-medium">
             {o.name}
           </div>
-          <div className="inline-flex justify-end">
+          <div className="inline-flex justify-end items-center space-x-4">
             {/* buttons */}
+            <IconButton
+              aria-label="set color temperature"
+              onClick={setKelvinPickerOpen}
+            >
+              <ContrastIcon
+                className={o.isDark ? "text-white" : "text-black"}
+              />
+            </IconButton>
+            <IconButton aria-label="set color" onClick={setColorPickerOpen}>
+              <ColorLensIcon
+                className={o.isDark ? "text-white" : "text-black"}
+              />
+            </IconButton>
+
             <StyledSwitch checked={switchChecked} onChange={handleSwitch} />
           </div>
         </div>
@@ -175,8 +196,31 @@ export function Light(o) {
           onChangeCommitted={handleBrightnessChange}
         />
       </div>
-      <Snackbar autoHideDuration={800} open={snackbarOpen} onClose={handleSnackbarClose} message={snackbarText} />
+      <Snackbar
+        autoHideDuration={800}
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={snackbarText}
+      />
+      <ColorPicker
+        id={o.id}
+        setColorPickerOpen={setColorPickerOpen}
+        colorPickerOpen={colorPickerOpen}
+        colormode={o.colormode}
+        color={o.color}
+        ct={o.ct}
+        mode="color"
+      />
 
+      <KelvinPicker
+        id={o.id}
+        kelvinPickerOpen={kelvinPickerOpen}
+        setKelvinPickerOpen={setKelvinPickerOpen}
+        colormode={o.colormode}
+        color={o.color}
+        ct={o.ct}
+        mode="kelvin"
+      />
     </>
   );
 }
@@ -185,10 +229,12 @@ export function Group(o) {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [switchChecked, setSwitchChecked] = useState(o.isOn);
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
+  const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
 
-  const handleSnackbarClose = function() {
+  const handleSnackbarClose = function () {
     setSnackbarOpen(false);
-  }
+  };
 
   const handleBrightnessChange = (event, newValue) => {
     let newBri = Math.round((newValue * 255) / 100);
@@ -196,20 +242,24 @@ export function Group(o) {
       hueLightSetBrightness(o.ids[i], newBri, 200);
     }
     setSnackbarOpen(false);
-    setSnackbarText("Changing brightness of Group [" + o.name + "] to " + newValue + "%");
+    setSnackbarText(
+      "Changing brightness of Group [" + o.name + "] to " + newValue + "%"
+    );
     setSnackbarOpen(true);
   };
 
   const handleSwitch = (event) => {
-    let newState = (event.target.checked);
+    let newState = event.target.checked;
     setSwitchChecked(newState);
     for (let i = 0; i < o.ids.length; i++) {
       hueLightSetState(o.ids[i], newState, 200);
     }
     setSnackbarOpen(false);
-    setSnackbarText("Toggling Group [" + o.name + "]. New state: " + (newState ? "ON" : "OFF"));
+    setSnackbarText(
+      "Toggling Group [" + o.name + "]. New state: " + (newState ? "ON" : "OFF")
+    );
     setSnackbarOpen(true);
-  }
+  };
 
   return (
     <>
@@ -223,8 +273,21 @@ export function Group(o) {
           <div className="inline-flex justify-start text-2xl font-medium">
             {o.name}
           </div>
-          <div className="inline-flex justify-end">
+          <div className="inline-flex justify-end items-center space-x-4">
             {/* buttons */}
+            <IconButton
+              aria-label="set color temperature"
+              onClick={setKelvinPickerOpen}
+            >
+              <ContrastIcon
+                className={o.isDark ? "text-white" : "text-black"}
+              />
+            </IconButton>
+            <IconButton aria-label="set color" onClick={setColorPickerOpen}>
+              <ColorLensIcon
+                className={o.isDark ? "text-white" : "text-black"}
+              />
+            </IconButton>
             <StyledSwitch checked={switchChecked} onChange={handleSwitch} />
           </div>
         </div>
@@ -250,7 +313,31 @@ export function Group(o) {
           onChangeCommitted={handleBrightnessChange}
         />
       </div>
-      <Snackbar autoHideDuration={800} open={snackbarOpen} onClose={handleSnackbarClose} message={snackbarText} />
+      <Snackbar
+        autoHideDuration={800}
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={snackbarText}
+      />
+      <ColorPicker
+        ids={o.ids}
+        setColorPickerOpen={setColorPickerOpen}
+        colorPickerOpen={colorPickerOpen}
+        colormode={o.colormode}
+        color={o.color}
+        ct={o.ct}
+        mode="color"
+      />
+
+      <KelvinPicker
+        ids={o.ids}
+        kelvinPickerOpen={kelvinPickerOpen}
+        setKelvinPickerOpen={setKelvinPickerOpen}
+        colormode={o.colormode}
+        color={o.color}
+        ct={o.ct}
+        mode="kelvin"
+      />
     </>
   );
 }
@@ -264,11 +351,14 @@ export function DrawAllLights(o) {
     console.log(thisLight);
 
     let hexcolor, isDark;
-    if (thisLight.state.colormode == "ct") {
-      hexcolor = ctToHex(thisLight.state.ct);
-    } else if (thisLight.state.colormode == "hs") {
+    let ct = 0;
+    let colormode = thisLight.state.colormode;
+    if (colormode == "ct") {
+      ct = thisLight.state.ct;
+      hexcolor = ctToHex(ct);
+    } else if (colormode == "hs") {
       hexcolor = hsvToRgb(thisLight.state.hue, thisLight.state.sat);
-    } else if (thisLight.state.colormode == "xy") {
+    } else if (colormode == "xy") {
       hexcolor = xyToRgb(thisLight.state.xy[0], thisLight.state.xy[1]);
     }
 
@@ -282,13 +372,15 @@ export function DrawAllLights(o) {
       isDark = true;
     }
 
-    let lightBrightness = Math.round(thisLight.state.bri / 255 * 100);
+    let lightBrightness = Math.round((thisLight.state.bri / 255) * 100);
 
     groups.push(
       <Light
         id={obj}
         isOn={thisLight.state.on}
+        colormode={colormode}
         color={hexcolor}
+        ct={ct}
         name={thisLight.name}
         isDark={isDark}
         lightBrightness={lightBrightness}
@@ -332,7 +424,7 @@ export function DrawAllGroups(o) {
       isDark = true;
     }
 
-    let lightBrightness = Math.round(thisGroup.averageBrightness / 255 * 100);
+    let lightBrightness = Math.round((thisGroup.averageBrightness / 255) * 100);
 
     groups.push(
       <Group
