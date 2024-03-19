@@ -7,12 +7,22 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Paper,
+  AppBar,
+  Toolbar,
+  Fab,
 } from "@mui/material";
 import { hueLightsGet, hueGroupsGet, fetchHueData } from "./hue";
 import { DrawAllLights, DrawAllGroups } from "@/components/Lights";
 import { useEffect, useState } from "react";
-import { BatchPrediction, Lightbulb } from "@mui/icons-material";
+import {
+  BatchPrediction,
+  Close,
+  Lightbulb,
+  Settings,
+} from "@mui/icons-material";
 import React from "react";
+import { BottomNav } from "@/components/BottomNav";
+import { HueSettings } from "@/components/HueSettings";
 
 export default function HueMain() {
   const [hueLightsData, setHueLightsData] = useState([]);
@@ -20,7 +30,6 @@ export default function HueMain() {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [bottomNavValue, setBottomNavValue] = useState(0);
-  const slideContainerRef = React.createRef();
 
   useEffect(() => {
     setInterval(function () {
@@ -29,17 +38,24 @@ export default function HueMain() {
     fetchHueData(setHueLightsData, setHueGroupsData);
   }, []);
 
+  function toggleSettingsFab() {
+    if (bottomNavValue !== 2) {
+      setBottomNavValue(2);
+    } else {
+      setBottomNavValue(0);
+    }
+  }
+
   return (
     <main>
       <Container className="pb-20 lg:pb-0" maxWidth="lg">
-        <div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-16 overflow-hidden"
-          ref={slideContainerRef}
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 overflow-hidden">
           <div
-            className={`${bottomNavValue == 0 ? "block" : "hidden"} lg:block`}
+            className={`${bottomNavValue == 0 ? "block" : "hidden lg:block"} ${
+              bottomNavValue >= 2 ? "lg:hidden" : ""
+            }`}
           >
-            <div className="mt-6 mb-2">
+            <div className="mt-4 lg:mt-8 mb-4">
               <Typography variant="h5">Groups</Typography>
             </div>
             <div>
@@ -52,9 +68,11 @@ export default function HueMain() {
           </div>
 
           <div
-            className={`${bottomNavValue == 1 ? "block" : "hidden"} lg:block`}
+            className={`${bottomNavValue == 1 ? "block" : "hidden lg:block"} ${
+              bottomNavValue >= 2 ? "lg:hidden" : ""
+            }`}
           >
-            <div className="mt-6 mb-2">
+            <div className="mt-4 lg:mt-8 mb-4">
               <Typography variant="h5">Lights</Typography>
             </div>
             <div>
@@ -65,20 +83,34 @@ export default function HueMain() {
               ></DrawAllLights>
             </div>
           </div>
+
+          <div className={`${bottomNavValue == 2 ? "block" : "hidden"}`}>
+            <div className="mt-4 lg:mt-8 mb-4">
+              <Typography variant="h5">Settings</Typography>
+            </div>
+            <div>
+              <HueSettings />
+            </div>
+          </div>
         </div>
       </Container>
-      <Paper className="fixed bottom-0 left-0 w-full lg:hidden">
-        <BottomNavigation
-          showLabels
-          value={bottomNavValue}
-          onChange={(event, newValue) => {
-            setBottomNavValue(newValue);
-          }}
-        >
-          <BottomNavigationAction label="Groups" icon={<BatchPrediction />} />
-          <BottomNavigationAction label="Lights" icon={<Lightbulb />} />
-        </BottomNavigation>
-      </Paper>
+      <BottomNav
+        bottomNavValue={bottomNavValue}
+        setBottomNavValue={setBottomNavValue}
+      />
+
+      <div className={`fixed top-4 right-4 hidden lg:block`}>
+        <div className={`${bottomNavValue !== 2 ? "block" : "hidden"}`}>
+          <Fab size="small" onClick={toggleSettingsFab}>
+            <Settings />
+          </Fab>
+        </div>
+        <div className={`${bottomNavValue == 2 ? "block" : "hidden"}`}>
+          <Fab size="small" onClick={toggleSettingsFab}>
+            <Close />
+          </Fab>
+        </div>
+      </div>
     </main>
   );
 }
