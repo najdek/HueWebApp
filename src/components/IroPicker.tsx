@@ -124,6 +124,10 @@ class IroKelvinPicker extends React.Component {
 }
 
 function PickerWrapper(o) {
+  const handleColorPickerClose = (event) => {
+    o.setModalOpen(false);
+  };
+
   const boxStyle = {
     position: "absolute",
     top: "50%",
@@ -141,7 +145,7 @@ function PickerWrapper(o) {
       <Box sx={{ ...boxStyle }}>
         <div className="flex justify-between items-center mb-4">
           <Typography variant="h5">{o.title}</Typography>
-          <IconButton aria-label="close">
+          <IconButton onClick={handleColorPickerClose} aria-label="close">
             <Close />
           </IconButton>
         </div>
@@ -156,14 +160,10 @@ export function ColorPicker(o) {
     o.setColorPickerOpen(false);
   };
 
-  const openColorPicker = () => {
-    o.setColorPickerOpen(true);
-  };
-
   return (
     <>
       <Modal open={o.colorPickerOpen} onClose={handleColorPickerClose}>
-        <PickerWrapper title={`Choose color`}>
+        <PickerWrapper setModalOpen={o.setColorPickerOpen} title={`Choose color`}>
           <IroColorPicker
             width={400}
             id={o.id}
@@ -185,14 +185,10 @@ export function KelvinPicker(o) {
     o.setKelvinPickerOpen(false);
   };
 
-  const openKelvinPicker = () => {
-    o.setKelvinPickerOpen(true);
-  };
-
   return (
     <>
       <Modal open={o.kelvinPickerOpen} onClose={handleKelvinPickerClose}>
-        <PickerWrapper title={`Choose color temperature`}>
+        <PickerWrapper setModalOpen={o.setKelvinPickerOpen} title={`Choose color temperature`}>
           <IroKelvinPicker
             width={400}
             id={o.id}
