@@ -427,11 +427,14 @@ export function DrawAllGroups(o) {
     }
 
     let hexcolor, isDark;
-    if (thisGroup.action.colormode == "ct") {
-      hexcolor = ctToHex(thisGroup.action.ct);
-    } else if (thisGroup.action.colormode == "hs") {
+    let ct = 0;
+    let colormode = thisGroup.action.colormode;
+    if (colormode == "ct") {
+      ct = thisGroup.action.ct;
+      hexcolor = ctToHex(ct);
+    } else if (colormode == "hs") {
       hexcolor = hsvToRgb(thisGroup.action.hue, thisGroup.action.sat);
-    } else if (thisGroup.action.colormode == "xy") {
+    } else if (colormode == "xy") {
       hexcolor = xyToRgb(thisGroup.action.xy[0], thisGroup.action.xy[1]);
     }
 
@@ -447,12 +450,15 @@ export function DrawAllGroups(o) {
 
     let lightBrightness = Math.round((thisGroup.averageBrightness / 255) * 100);
 
+    console.log("colormode: group " + obj + " " + colormode);
     groups.push(
       <Group
         id={obj}
         ids={thisGroup.lights}
         isOn={thisGroup.action.on}
+        colormode={colormode}
         color={hexcolor}
+        ct={ct}
         name={thisGroup.name}
         isDark={isDark}
         lightBrightness={lightBrightness}
