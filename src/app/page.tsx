@@ -1,5 +1,4 @@
 "use client";
-import { ResponsiveAppBar } from "@/components/AppBar";
 import { Button, Container, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";

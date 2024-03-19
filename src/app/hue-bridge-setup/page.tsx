@@ -1,5 +1,4 @@
 "use client";
-import { ResponsiveAppBar } from "@/components/AppBar";
 import { Container, Typography, Button, TextField } from "@mui/material";
 import { bridgeNew } from "./bridge-new";
 import useSWR from "swr";

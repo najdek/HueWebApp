@@ -156,7 +156,10 @@ export function Light(o) {
         className={`min-h-20 w-full flex rounded-t-md ${
           o.isDark ? "text-white" : "text-black"
         }`}
-        style={{ backgroundColor: "#" + o.color, transition: "background-color 500ms linear" }}
+        style={{
+          backgroundColor: "#" + o.color,
+          transition: "background-color 500ms linear",
+        }}
       >
         <div className="flex justify-between items-center w-full min-h-max px-6">
           <div className="inline-flex justify-start text-2xl font-medium">
@@ -285,7 +288,10 @@ export function Group(o) {
         className={`min-h-20 w-full flex rounded-t-md ${
           o.isDark ? "text-white" : "text-black"
         }`}
-        style={{ backgroundColor: "#" + o.color, transition: "background-color 500ms linear" }}
+        style={{
+          backgroundColor: "#" + o.color,
+          transition: "background-color 500ms linear",
+        }}
       >
         <div className="flex justify-between items-center w-full min-h-max px-6">
           <div className="inline-flex justify-start text-2xl font-medium">

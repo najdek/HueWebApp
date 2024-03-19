@@ -163,7 +163,10 @@ export function ColorPicker(o) {
   return (
     <>
       <Modal open={o.colorPickerOpen} onClose={handleColorPickerClose}>
-        <PickerWrapper setModalOpen={o.setColorPickerOpen} title={`Choose color`}>
+        <PickerWrapper
+          setModalOpen={o.setColorPickerOpen}
+          title={`Choose color`}
+        >
           <IroColorPicker
             width={400}
             id={o.id}
@@ -188,7 +191,10 @@ export function KelvinPicker(o) {
   return (
     <>
       <Modal open={o.kelvinPickerOpen} onClose={handleKelvinPickerClose}>
-        <PickerWrapper setModalOpen={o.setKelvinPickerOpen} title={`Choose color temperature`}>
+        <PickerWrapper
+          setModalOpen={o.setKelvinPickerOpen}
+          title={`Choose color temperature`}
+        >
           <IroKelvinPicker
             width={400}
             id={o.id}

@@ -91,7 +91,6 @@ export async function hueLightSetKelvin(lightid, state, ct, transitionTime) {
   return data;
 }
 
-
 export async function fetchHueData(setHueLightsData, setHueGroupsData) {
   try {
     let newHueLightsData = await hueLightsGet();
