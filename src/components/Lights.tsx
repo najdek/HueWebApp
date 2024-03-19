@@ -40,6 +40,7 @@ const CustomSlider = styled(Slider)({
     "&::before": {
       display: "none",
     },
+    transition: "left 0.5s",
   },
   "& .MuiSlider-valueLabel": {
     lineHeight: 1.2,
@@ -155,7 +156,7 @@ export function Light(o) {
         className={`min-h-20 w-full flex rounded-t-md ${
           o.isDark ? "text-white" : "text-black"
         }`}
-        style={{ backgroundColor: "#" + o.color }}
+        style={{ backgroundColor: "#" + o.color, transition: "background-color 500ms linear" }}
       >
         <div className="flex justify-between items-center w-full min-h-max px-6">
           <div className="inline-flex justify-start text-2xl font-medium">
@@ -189,14 +190,17 @@ export function Light(o) {
         style={{ backgroundColor: "#" + o.color }}
       >
         <CustomSlider
-          key={`bri-slider-light-${o.id}-${o.lightBrightness}`}
+          key={`bri-slider-light-${o.id}`}
           sx={{
             '& input[type="range"]': {
               WebkitAppearance: "slider-horizontal",
             },
           }}
           orientation="horizontal"
-          defaultValue={o.isOn ? o.lightBrightness : 0}
+          value={o.lightBrightness}
+          step={1}
+          min={0}
+          max={100}
           aria-label="Brightness"
           valueLabelDisplay="auto"
           onChangeCommitted={handleBrightnessChange}
@@ -244,7 +248,6 @@ export function Group(o) {
   const setHueLightsData = o.setHueLightsData;
   const setHueGroupsData = o.setHueGroupsData;
 
-
   const handleSnackbarClose = function () {
     setSnackbarOpen(false);
   };
@@ -282,7 +285,7 @@ export function Group(o) {
         className={`min-h-20 w-full flex rounded-t-md ${
           o.isDark ? "text-white" : "text-black"
         }`}
-        style={{ backgroundColor: "#" + o.color }}
+        style={{ backgroundColor: "#" + o.color, transition: "background-color 500ms linear" }}
       >
         <div className="flex justify-between items-center w-full min-h-max px-6">
           <div className="inline-flex justify-start text-2xl font-medium">
@@ -315,14 +318,17 @@ export function Group(o) {
         style={{ backgroundColor: "#" + o.color }}
       >
         <CustomSlider
-          key={`bri-slider-group-${o.id}-${o.lightBrightness}`}
+          key={`bri-slider-group-${o.id}`}
           sx={{
             '& input[type="range"]': {
               WebkitAppearance: "slider-horizontal",
             },
           }}
           orientation="horizontal"
-          defaultValue={o.isOn ? o.lightBrightness : 0}
+          value={o.lightBrightness}
+          step={1}
+          min={0}
+          max={100}
           aria-label="Brightness"
           valueLabelDisplay="auto"
           onChangeCommitted={handleBrightnessChange}
