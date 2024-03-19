@@ -5,13 +5,11 @@ import { hueLightsGet, hueGroupsGet } from "./hue";
 import { DrawAllLights, DrawAllGroups } from "@/components/Lights";
 import { useEffect, useState } from "react";
 
-
 export default function HueMain() {
   const [hueLightsData, setHueLightsData] = useState([]);
   const [hueGroupsData, setHueGroupsData] = useState([]);
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-
 
   useEffect(() => {
     async function fetchData() {
@@ -25,9 +23,13 @@ export default function HueMain() {
           let groupBrightness = [];
           for (let lightObj in thisGroup.lights) {
             let thisLight = newHueLightsData[thisGroup.lights[lightObj]];
+            if (thisLight.state.on) {
               groupBrightness.push(thisLight.state.bri);
+            }
           }
-          let averageBrightness = Math.round((groupBrightness.reduce((a, b) => a + b, 0) / groupBrightness.length));
+          let averageBrightness = Math.round(
+            groupBrightness.reduce((a, b) => a + b, 0) / groupBrightness.length
+          );
           newHueGroupsData[groupObj]["averageBrightness"] = averageBrightness;
         }
 
@@ -51,7 +53,13 @@ export default function HueMain() {
               <Typography variant="h5">Lights</Typography>
             </div>
             <div>
-              <DrawAllLights data={hueLightsData} setSnackbarOpen={setSnackbarOpen} setSnackbarText={setSnackbarText} snackbarOpen={snackbarOpen} snackbarText={snackbarText}></DrawAllLights>
+              <DrawAllLights
+                data={hueLightsData}
+                setSnackbarOpen={setSnackbarOpen}
+                setSnackbarText={setSnackbarText}
+                snackbarOpen={snackbarOpen}
+                snackbarText={snackbarText}
+              ></DrawAllLights>
             </div>
           </div>
           <div>
