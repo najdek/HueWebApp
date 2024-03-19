@@ -4,10 +4,13 @@ import React from "react";
 import { Close } from "@mui/icons-material";
 import { hueLightSetColor, hueLightSetKelvin } from "@/app/hue-main/hue";
 import { ctToHex, ctToPickerKelvin, hexToHs, kelvinToCt } from "@/app/colors";
+import { fetchHueData } from "@/app/hue-main/hue";
 
 class IroColorPicker extends React.Component {
   componentDidMount() {
     const { props } = this;
+    const setHueLightsData = props.setHueLightsData;
+    const setHueGroupsData = props.setHueGroupsData;
     // create a new iro color picker and pass component props to it
     this.colorPicker = new iro.ColorPicker(this.el, {
       width: props.width || "250",
@@ -36,6 +39,7 @@ class IroColorPicker extends React.Component {
       } else {
         hueLightSetColor(props.id, true, hue, sat, 400);
       }
+      fetchHueData(setHueLightsData, setHueGroupsData);
     });
   }
   /*
@@ -60,6 +64,8 @@ class IroColorPicker extends React.Component {
 class IroKelvinPicker extends React.Component {
   componentDidMount() {
     const { props } = this;
+    const setHueLightsData = props.setHueLightsData;
+    const setHueGroupsData = props.setHueGroupsData;
 
     let pickerColor;
     if (props.colormode == "ct" && props.ct > 152 && props.ct < 501) {
@@ -95,6 +101,7 @@ class IroKelvinPicker extends React.Component {
       } else {
         hueLightSetKelvin(props.id, true, ct, 400);
       }
+      fetchHueData(setHueLightsData, setHueGroupsData);
     });
   }
   /*
@@ -164,6 +171,8 @@ export function ColorPicker(o) {
             colormode={o.colormode}
             color={o.color}
             ct={o.ct}
+            setHueLightsData={o.setHueLightsData}
+            setHueGroupsData={o.setHueGroupsData}
           />
         </PickerWrapper>
       </Modal>
@@ -191,6 +200,8 @@ export function KelvinPicker(o) {
             colormode={o.colormode}
             color={o.color}
             ct={o.ct}
+            setHueLightsData={o.setHueLightsData}
+            setHueGroupsData={o.setHueGroupsData}
           />
         </PickerWrapper>
       </Modal>

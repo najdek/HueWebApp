@@ -1,7 +1,7 @@
 "use client";
 import { ResponsiveAppBar } from "@/components/AppBar";
 import { Button, Container, Typography, Snackbar } from "@mui/material";
-import { hueLightsGet, hueGroupsGet } from "./hue";
+import { hueLightsGet, hueGroupsGet, fetchHueData } from "./hue";
 import { DrawAllLights, DrawAllGroups } from "@/components/Lights";
 import { useEffect, useState } from "react";
 
@@ -12,36 +12,10 @@ export default function HueMain() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        let newHueLightsData = await hueLightsGet();
-        let newHueGroupsData = await hueGroupsGet();
-
-        // calculate average brightness for groups using data from lights fetch
-        for (let groupObj in newHueGroupsData) {
-          let thisGroup = newHueGroupsData[groupObj];
-          let groupBrightness = [];
-          for (let lightObj in thisGroup.lights) {
-            let thisLight = newHueLightsData[thisGroup.lights[lightObj]];
-            if (thisLight.state.on) {
-              groupBrightness.push(thisLight.state.bri);
-            }
-          }
-          let averageBrightness = Math.round(
-            groupBrightness.reduce((a, b) => a + b, 0) / groupBrightness.length
-          );
-          newHueGroupsData[groupObj]["averageBrightness"] = averageBrightness;
-        }
-
-        setHueLightsData(newHueLightsData);
-        setHueGroupsData(newHueGroupsData);
-
-        setTimeout(fetchData, 2000);
-      } catch (error) {
-        //error
-      }
-    }
-    fetchData();
+    setInterval(function() {
+      fetchHueData(setHueLightsData, setHueGroupsData);
+    }, 10000)
+    fetchHueData(setHueLightsData, setHueGroupsData);
   }, []);
 
   return (
@@ -55,10 +29,8 @@ export default function HueMain() {
             <div>
               <DrawAllLights
                 data={hueLightsData}
-                setSnackbarOpen={setSnackbarOpen}
-                setSnackbarText={setSnackbarText}
-                snackbarOpen={snackbarOpen}
-                snackbarText={snackbarText}
+                setHueLightsData={setHueLightsData}
+                setHueGroupsData={setHueGroupsData}
               ></DrawAllLights>
             </div>
           </div>
@@ -67,7 +39,10 @@ export default function HueMain() {
               <Typography variant="h5">Groups</Typography>
             </div>
             <div>
-              <DrawAllGroups data={hueGroupsData}></DrawAllGroups>
+              <DrawAllGroups 
+                setHueLightsData={setHueLightsData}
+                setHueGroupsData={setHueGroupsData}
+              data={hueGroupsData}></DrawAllGroups>
             </div>
           </div>
         </div>

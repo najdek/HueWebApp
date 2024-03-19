@@ -21,6 +21,8 @@ import { ColorPicker, KelvinPicker } from "./IroPicker";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import ContrastIcon from "@mui/icons-material/Contrast";
 
+import { fetchHueData } from "@/app/hue-main/hue";
+
 const CustomSlider = styled(Slider)({
   color: "#00000000",
   height: 0,
@@ -114,9 +116,11 @@ const StyledSwitch = styled((props: SwitchProps) => (
 export function Light(o) {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [switchChecked, setSwitchChecked] = useState(o.isOn);
+  const [switchChecked, setSwitchChecked] = useState(false);
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
+  const setHueLightsData = o.setHueLightsData;
+  const setHueGroupsData = o.setHueGroupsData;
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -130,6 +134,7 @@ export function Light(o) {
       "Changing brightness of Light [" + o.name + "] to " + newValue + "%"
     );
     setSnackbarOpen(true);
+    fetchHueData(setHueLightsData, setHueGroupsData);
   };
 
   const handleSwitch = (event) => {
@@ -141,6 +146,7 @@ export function Light(o) {
       "Toggling Light [" + o.name + "]. New state: " + (newState ? "ON" : "OFF")
     );
     setSnackbarOpen(true);
+    fetchHueData(setHueLightsData, setHueGroupsData);
   };
 
   return (
@@ -171,7 +177,7 @@ export function Light(o) {
               />
             </IconButton>
 
-            <StyledSwitch checked={switchChecked} onChange={handleSwitch} />
+            <StyledSwitch checked={o.isOn} onChange={handleSwitch} />
           </div>
         </div>
       </div>
@@ -210,6 +216,8 @@ export function Light(o) {
         color={o.color}
         ct={o.ct}
         mode="color"
+        setHueLightsData={o.setHueLightsData}
+        setHueGroupsData={o.setHueGroupsData}
       />
 
       <KelvinPicker
@@ -220,6 +228,8 @@ export function Light(o) {
         color={o.color}
         ct={o.ct}
         mode="kelvin"
+        setHueLightsData={o.setHueLightsData}
+        setHueGroupsData={o.setHueGroupsData}
       />
     </>
   );
@@ -231,6 +241,9 @@ export function Group(o) {
   const [switchChecked, setSwitchChecked] = useState(o.isOn);
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
+  const setHueLightsData = o.setHueLightsData;
+  const setHueGroupsData = o.setHueGroupsData;
+
 
   const handleSnackbarClose = function () {
     setSnackbarOpen(false);
@@ -246,6 +259,7 @@ export function Group(o) {
       "Changing brightness of Group [" + o.name + "] to " + newValue + "%"
     );
     setSnackbarOpen(true);
+    fetchHueData(setHueLightsData, setHueGroupsData);
   };
 
   const handleSwitch = (event) => {
@@ -259,6 +273,7 @@ export function Group(o) {
       "Toggling Group [" + o.name + "]. New state: " + (newState ? "ON" : "OFF")
     );
     setSnackbarOpen(true);
+    fetchHueData(setHueLightsData, setHueGroupsData);
   };
 
   return (
@@ -288,7 +303,7 @@ export function Group(o) {
                 className={o.isDark ? "text-white" : "text-black"}
               />
             </IconButton>
-            <StyledSwitch checked={switchChecked} onChange={handleSwitch} />
+            <StyledSwitch checked={o.isOn} onChange={handleSwitch} />
           </div>
         </div>
       </div>
@@ -327,6 +342,8 @@ export function Group(o) {
         color={o.color}
         ct={o.ct}
         mode="color"
+        setHueLightsData={o.setHueLightsData}
+        setHueGroupsData={o.setHueGroupsData}
       />
 
       <KelvinPicker
@@ -337,6 +354,8 @@ export function Group(o) {
         color={o.color}
         ct={o.ct}
         mode="kelvin"
+        setHueLightsData={o.setHueLightsData}
+        setHueGroupsData={o.setHueGroupsData}
       />
     </>
   );
@@ -384,6 +403,8 @@ export function DrawAllLights(o) {
         name={thisLight.name}
         isDark={isDark}
         lightBrightness={lightBrightness}
+        setHueLightsData={o.setHueLightsData}
+        setHueGroupsData={o.setHueGroupsData}
       ></Light>
     );
   }
@@ -435,6 +456,8 @@ export function DrawAllGroups(o) {
         name={thisGroup.name}
         isDark={isDark}
         lightBrightness={lightBrightness}
+        setHueLightsData={o.setHueLightsData}
+        setHueGroupsData={o.setHueGroupsData}
       ></Group>
     );
   }
