@@ -1,4 +1,4 @@
-export function xyToRgb(x, y) {
+export function xyToRgb(x:number, y:number) {
   if (x == 0) {
     x = 0.001;
   }
@@ -42,18 +42,21 @@ export function xyToRgb(x, y) {
   return rgbToHex(Math.round(r), Math.round(g), Math.round(b));
 }
 
-export function rgbToHex(r, g, b) {
+export function rgbToHex(r:number, g:number, b:number) {
   return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
-export function hsvToRgb(h, s) {
+export function hsvToRgb(h:number, s:number) {
   h = h / 65535;
   s = s / 254;
   let v = 1;
-  let r, g, b, i, f, p, q, t;
+  let r = 0, g = 0, b = 0;
+  let i, f, p, q, t;
+  /*
   if (arguments.length === 1) {
     (s = h.s), (v = h.v), (h = h.h);
   }
+  */
   i = Math.floor(h * 6);
   f = h * 6 - i;
   p = v * (1 - s);
@@ -87,19 +90,19 @@ export function hsvToRgb(h, s) {
   );
 }
 
-export function hexToHs(hex) {
+export function hexToHs(hex:string) {
   var bigint = parseInt(hex, 16);
   var r = (bigint >> 16) & 255;
   var g = (bigint >> 8) & 255;
   var b = bigint & 255;
 
-  let rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn;
+  let rabs, gabs, babs, rr, gg, bb, h = 0, s, v:number, diff:number, diffc, percentRoundFn;
   rabs = r / 255;
   gabs = g / 255;
   babs = b / 255;
   (v = Math.max(rabs, gabs, babs)), (diff = v - Math.min(rabs, gabs, babs));
-  diffc = (c) => (v - c) / 6 / diff + 1 / 2;
-  percentRoundFn = (num) => Math.round(num * 100) / 100;
+  diffc = (c:number) => (v - c) / 6 / diff + 1 / 2;
+  percentRoundFn = (num:number) => Math.round(num * 100) / 100;
   if (diff == 0) {
     h = s = 0;
   } else {
@@ -128,7 +131,7 @@ export function hexToHs(hex) {
   };
 }
 
-export function kelvinToCt(kelvin) {
+export function kelvinToCt(kelvin:number) {
   let minPicked = 2194.0536499023438;
   let maxPicked = 10991.905212402344;
 
@@ -144,7 +147,7 @@ export function kelvinToCt(kelvin) {
   return pickedValue;
 }
 
-export function ctToPickerKelvin(ct) {
+export function ctToPickerKelvin(ct:number) {
   let ctMin = 153;
   let ctMax = 500;
   let minPicked = 2194.0536499023438;
@@ -154,7 +157,7 @@ export function ctToPickerKelvin(ct) {
   return value;
 }
 
-export function kelvinToRgb(kelvin) {
+export function kelvinToRgb(kelvin:number) {
   // source: https://gist.github.com/paulkaplan/5184275
   var temp = kelvin / 100;
   var red, green, blue;
@@ -185,7 +188,7 @@ export function kelvinToRgb(kelvin) {
   };
 }
 
-export function ctToHex(ct) {
+export function ctToHex(ct:number) {
   let ctMin = 153;
   let ctMax = 500;
 
@@ -207,7 +210,7 @@ export function ctToHex(ct) {
   return rgbToHex(rgb.r, rgb.g, rgb.b);
 }
 
-export function lightOrDark(color) {
+export function lightOrDark(color:any) {
   if (color === undefined) {
     return "light";
   }

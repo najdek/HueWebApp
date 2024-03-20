@@ -3,20 +3,17 @@ import { Container, Typography, Button, TextField } from "@mui/material";
 import { bridgeNew } from "./bridge-new";
 import { useState } from "react";
 import React from "react";
-import { useRef } from "react";
 import { useRouter } from "next/navigation";
 
 export default function HueBridgeSetupPage() {
-  const [ipInput, setIpInput] = useState("")
-  const [bridgeSetupOutput, setBridgeSetupOutput] = useState();
-  const [setupResult, setSetupResult] = useState();
+  const [ipInput, setIpInput] = useState<string>("")
+  const [setupResult, setSetupResult] = useState<string>();
 
   const { push } = useRouter();
 
   const handleConnectBtnClick = async function() {
     let out = await bridgeNew(ipInput);
     let outputText;
-    setBridgeSetupOutput(out);
 
     if (out.error) {
       if (out.error.type == 101) {
@@ -24,7 +21,7 @@ export default function HueBridgeSetupPage() {
         outputText = "Press the link button on your Bridge \nThen try to Connect again";
       } else {
         // unknown error
-        outputText = "Error:\n" + JSON.stringify(data);
+        outputText = "Error:\n" + JSON.stringify(out);
       }
     } else {
       if (out.success) {

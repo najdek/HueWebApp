@@ -2,7 +2,7 @@ import { BatchPrediction, Lightbulb, Settings } from "@mui/icons-material";
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 import { useRouter } from "next/navigation";
 
-export function BottomNav(o) {
+export function BottomNav(o:any) {
   const { push } = useRouter();
 
   return (

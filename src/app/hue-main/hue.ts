@@ -24,7 +24,7 @@ export async function hueGroupsGet() {
   return data;
 }
 
-export async function hueLightSetBrightness(lightid, bri, transitionTime) {
+export async function hueLightSetBrightness(lightid:number, bri:number, transitionTime:number) {
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
   const apiUrl =
@@ -37,7 +37,7 @@ export async function hueLightSetBrightness(lightid, bri, transitionTime) {
   return data;
 }
 
-export async function hueLightSetState(lightid, state, transitionTime) {
+export async function hueLightSetState(lightid:number, state:boolean, transitionTime:number) {
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
   const apiUrl =
@@ -51,11 +51,11 @@ export async function hueLightSetState(lightid, state, transitionTime) {
 }
 
 export async function hueLightSetColor(
-  lightid,
-  state,
-  hue,
-  sat,
-  transitionTime
+  lightid:number,
+  state:boolean,
+  hue:number,
+  sat:number,
+  transitionTime:number
 ) {
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
@@ -74,7 +74,7 @@ export async function hueLightSetColor(
   return data;
 }
 
-export async function hueLightSetKelvin(lightid, state, ct, transitionTime) {
+export async function hueLightSetKelvin(lightid:number, state:boolean, ct:number, transitionTime:number) {
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
   const apiUrl =
@@ -91,7 +91,7 @@ export async function hueLightSetKelvin(lightid, state, ct, transitionTime) {
   return data;
 }
 
-export async function fetchHueData(setHueLightsData, setHueGroupsData) {
+export async function fetchHueData(setHueLightsData:Function, setHueGroupsData:Function) {
   try {
     let newHueLightsData = await hueLightsGet();
     let newHueGroupsData = await hueGroupsGet();
