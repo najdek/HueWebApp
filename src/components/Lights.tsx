@@ -10,10 +10,10 @@ import { kelvinToRgb } from "@/app/colors";
 import { ctToHex } from "@/app/colors";
 import { lightOrDark } from "@/app/colors";
 
-import { IconButton, Slider, styled, Switch } from "@mui/material";
+import { IconButton, Slider, styled, Switch, SwitchProps } from "@mui/material";
 
 import { hueLightSetBrightness, hueLightSetState } from "@/app/hue-main/hue";
-import { useState } from "react";
+import { ReactEventHandler, SyntheticEvent, useState } from "react";
 
 import { Snackbar } from "@mui/material";
 import switchBaseClasses from "@mui/material/internal/switchBaseClasses";
@@ -22,6 +22,7 @@ import ColorLensIcon from "@mui/icons-material/ColorLens";
 import ContrastIcon from "@mui/icons-material/Contrast";
 
 import { fetchHueData } from "@/app/hue-main/hue";
+import { SwitchBaseProps } from "@mui/material/internal/SwitchBase";
 
 const CustomSlider = styled(Slider)({
   color: "#00000000",
@@ -114,7 +115,7 @@ const StyledSwitch = styled((props: SwitchProps) => (
   },
 }));
 
-export function Light(o) {
+export function Light(o:any) {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [switchChecked, setSwitchChecked] = useState(false);
@@ -127,18 +128,19 @@ export function Light(o) {
     setSnackbarOpen(false);
   };
 
-  const handleBrightnessChange = (event, newValue) => {
+  const handleBrightnessChange = (vent: Event | SyntheticEvent<Element, Event>, value: number | any) => {
+    let newValue = value.isArray() ? value[0] : value;
     let newBri = Math.round((newValue * 255) / 100);
     hueLightSetBrightness(o.id, newBri, 200);
     setSnackbarOpen(false);
     setSnackbarText(
-      "Changing brightness of Light [" + o.name + "] to " + newValue + "%"
+      "Changing brightness of Light [" + o.name + "] to " + value + "%"
     );
     setSnackbarOpen(true);
     fetchHueData(setHueLightsData, setHueGroupsData);
   };
 
-  const handleSwitch = (event) => {
+  const handleSwitch = (event: any) => {
     let newState = event.target.checked;
     setSwitchChecked(newState);
     hueLightSetState(o.id, newState, 200);
@@ -167,20 +169,18 @@ export function Light(o) {
           </div>
           <div className="inline-flex justify-end items-center space-x-4">
             {/* buttons */}
+            <div onClick={() => setKelvinPickerOpen(true)}>
             <IconButton
               aria-label="set color temperature"
-              onClick={setKelvinPickerOpen}
             >
-              <ContrastIcon
-                className={o.isDark ? "text-white" : "text-black"}
-              />
+              <ContrastIcon className={o.isDark ? "text-white" : "text-black"} />
             </IconButton>
-            <IconButton aria-label="set color" onClick={setColorPickerOpen}>
-              <ColorLensIcon
-                className={o.isDark ? "text-white" : "text-black"}
-              />
+            </div>
+            <div onClick={() => setColorPickerOpen(true)}>
+            <IconButton aria-label="set color">
+              <ColorLensIcon className={o.isDark ? "text-white" : "text-black"} />
             </IconButton>
-
+            </div>
             <StyledSwitch checked={o.isOn} onChange={handleSwitch} />
           </div>
         </div>
@@ -242,7 +242,7 @@ export function Light(o) {
   );
 }
 
-export function Group(o) {
+export function Group(o:any) {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [switchChecked, setSwitchChecked] = useState(o.isOn);
@@ -255,20 +255,20 @@ export function Group(o) {
     setSnackbarOpen(false);
   };
 
-  const handleBrightnessChange = (event, newValue) => {
-    let newBri = Math.round((newValue * 255) / 100);
+  const handleBrightnessChange = (vent: Event | SyntheticEvent<Element, Event>, value: number | any) => {
+    let newBri = Math.round((value * 255) / 100);
     for (let i = 0; i < o.ids.length; i++) {
       hueLightSetBrightness(o.ids[i], newBri, 200);
     }
     setSnackbarOpen(false);
     setSnackbarText(
-      "Changing brightness of Group [" + o.name + "] to " + newValue + "%"
+      "Changing brightness of Group [" + o.name + "] to " + value + "%"
     );
     setSnackbarOpen(true);
     fetchHueData(setHueLightsData, setHueGroupsData);
   };
 
-  const handleSwitch = (event) => {
+  const handleSwitch = (event:any) => {
     let newState = event.target.checked;
     setSwitchChecked(newState);
     for (let i = 0; i < o.ids.length; i++) {
@@ -299,19 +299,21 @@ export function Group(o) {
           </div>
           <div className="inline-flex justify-end items-center space-x-4">
             {/* buttons */}
-            <IconButton
-              aria-label="set color temperature"
-              onClick={setKelvinPickerOpen}
-            >
+            <div onClick={() => setKelvinPickerOpen(true)}>
+            <IconButton aria-label="set color temperature">
               <ContrastIcon
                 className={o.isDark ? "text-white" : "text-black"}
               />
             </IconButton>
-            <IconButton aria-label="set color" onClick={setColorPickerOpen}>
+            </div>
+            <div onClick={() => setColorPickerOpen(true)}>
+            <IconButton aria-label="set color">
               <ColorLensIcon
                 className={o.isDark ? "text-white" : "text-black"}
               />
             </IconButton>
+            </div>
+
             <StyledSwitch checked={o.isOn} onChange={handleSwitch} />
           </div>
         </div>
@@ -373,7 +375,7 @@ export function Group(o) {
   );
 }
 
-export function DrawAllLights(o) {
+export function DrawAllLights(o:any) {
   let data = o.data;
   let groups = [];
   for (var obj in data) {
@@ -423,7 +425,7 @@ export function DrawAllLights(o) {
   return <>{groups}</>;
 }
 
-export function DrawAllGroups(o) {
+export function DrawAllGroups(o:any) {
   let data = o.data;
   console.log(data);
   let groups = [];

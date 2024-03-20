@@ -6,13 +6,16 @@ import { hueLightSetColor, hueLightSetKelvin } from "@/app/hue-main/hue";
 import { ctToHex, ctToPickerKelvin, hexToHs, kelvinToCt } from "@/app/colors";
 import { fetchHueData } from "@/app/hue-main/hue";
 
+
 class IroColorPicker extends React.Component {
+  props: any;
+  el: any;
   componentDidMount() {
     const { props } = this;
     const setHueLightsData = props.setHueLightsData;
     const setHueGroupsData = props.setHueGroupsData;
     // create a new iro color picker and pass component props to it
-    this.colorPicker = new iro.ColorPicker(this.el, {
+    const colorPicker = iro.ColorPicker(this.el, {
       width: props.width || "250",
       color: props.color || "#ffffff",
       layout: [
@@ -26,7 +29,7 @@ class IroColorPicker extends React.Component {
       ],
     });
     // call onColorChange prop whenever the color changes
-    this.colorPicker.on("input:end", (color) => {
+    colorPicker.on("input:end", (color: { hexString: string; }) => {
       if (props.onColorChange) props.onColorChange(color);
       let colorHs = hexToHs(color.hexString.substring(1));
       let hue = colorHs.h;
@@ -62,6 +65,8 @@ class IroColorPicker extends React.Component {
 }
 
 class IroKelvinPicker extends React.Component {
+  props: any
+  el: any;
   componentDidMount() {
     const { props } = this;
     const setHueLightsData = props.setHueLightsData;
@@ -75,7 +80,7 @@ class IroKelvinPicker extends React.Component {
     }
 
     // create a new iro color picker and pass component props to it
-    this.colorPicker = new iro.ColorPicker(this.el, {
+    const colorPicker = iro.ColorPicker(this.el, {
       width: props.width || "250",
       color: { kelvin: pickerColor } || "#ffffff",
       layout: [
@@ -90,7 +95,7 @@ class IroKelvinPicker extends React.Component {
       ],
     });
     // call onColorChange prop whenever the color changes
-    this.colorPicker.on("input:end", (color) => {
+    colorPicker.on("input:end", (color: { kelvin: number; }) => {
       if (props.onColorChange) props.onColorChange(color);
       let ct = kelvinToCt(color.kelvin);
 
@@ -123,8 +128,8 @@ class IroKelvinPicker extends React.Component {
   }
 }
 
-function PickerWrapper(o) {
-  const handleColorPickerClose = (event) => {
+function PickerWrapper(o:any) {
+  const handleColorPickerClose = () => {
     o.setModalOpen(false);
   };
 
@@ -155,8 +160,9 @@ function PickerWrapper(o) {
   );
 }
 
-export function ColorPicker(o) {
-  const handleColorPickerClose = (event) => {
+
+export function ColorPicker(o:any) {
+  const handleColorPickerClose = () => {
     o.setColorPickerOpen(false);
   };
 
@@ -183,8 +189,8 @@ export function ColorPicker(o) {
   );
 }
 
-export function KelvinPicker(o) {
-  const handleKelvinPickerClose = (event) => {
+export function KelvinPicker(o:any) {
+  const handleKelvinPickerClose = () => {
     o.setKelvinPickerOpen(false);
   };
 

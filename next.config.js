@@ -11,9 +11,5 @@ module.exports = {
         }
       ]
     },
-    reactStrictMode: false,
-    typescript: {
-        // !!! REMOVE THIS LATER !!!
-        ignoreBuildErrors: true
-    }
+    reactStrictMode: false
   }
