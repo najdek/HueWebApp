@@ -1,6 +1,8 @@
 "use client";
+import { getApiUrl } from "../hue-main/hue";
+
 export async function bridgeNew(ip: string) {
-  const res = await fetch("/hue-setup-proxy/" + ip, {
+  const res = await fetch(getApiUrl(ip), {
     method: "POST",
     body: JSON.stringify({ devicetype: "HueWebApp" }),
   });

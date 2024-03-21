@@ -6,8 +6,8 @@ module.exports = {
           destination: 'http://:ip/api/:path*',
         },
         {
-            source: '/hue-setup-proxy/:ip',
-            destination: 'http://:ip/api',
+          source: '/hue-api-proxy-ssl/:ip/:path*',
+          destination: 'https://:ip/api/:path*',
         }
       ]
     },

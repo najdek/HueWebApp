@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const { push } = useRouter();
   useEffect(() => {
-    const bridgeIp = localStorage.getItem("bridgeIp") || "";
+    const bridgeIp = typeof window !== "undefined" ? localStorage.getItem("bridgeIp") : "";
     if (bridgeIp !== "") {
       push("/hue-main");
     }

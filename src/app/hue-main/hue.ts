@@ -1,9 +1,37 @@
 "use client";
 
+export function getApiUrl(forceIp?: string) {
+  const ip = forceIp || localStorage.getItem("bridgeIp");
+  const apiUrlProxied = "/hue-api-proxy/" + ip + "/";
+  const apiUrlProxiedSsl = "/hue-api-proxy-ssl/" + ip + "/";
+  const apiUrl = "http://" + ip + "/api/";
+  const apiUrlSsl = "https://" + ip + "/api/";
+  var settingProxy = localStorage.getItem("proxy") == "true";
+  var settingSsl = localStorage.getItem("ssl") == "true";
+
+  let out;
+
+  if (settingProxy) {
+    if (settingSsl) {
+      out = apiUrlProxiedSsl;
+    } else {
+      out = apiUrlProxied;
+    }
+  } else {
+    if (settingSsl) {
+      out = apiUrlSsl;
+    } else {
+      out = apiUrl;
+    }
+  }
+
+  return out;
+}
+
 export async function hueLightsGet() {
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
-  const apiUrl = "/hue-api-proxy/" + ip + "/" + bridgeAuth + "/lights";
+  const apiUrl = getApiUrl() + bridgeAuth + "/lights";
 
   const res = await fetch(apiUrl, {
     method: "GET",
@@ -15,7 +43,7 @@ export async function hueLightsGet() {
 export async function hueGroupsGet() {
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
-  const apiUrl = "/hue-api-proxy/" + ip + "/" + bridgeAuth + "/groups";
+  const apiUrl = getApiUrl() + bridgeAuth + "/groups";
 
   const res = await fetch(apiUrl, {
     method: "GET",
@@ -28,7 +56,7 @@ export async function hueLightSetBrightness(lightid:number, bri:number, transiti
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
   const apiUrl =
-    "/hue-api-proxy/" + ip + "/" + bridgeAuth + "/lights/" + lightid + "/state";
+  getApiUrl() + bridgeAuth + "/lights/" + lightid + "/state";
   const res = await fetch(apiUrl, {
     method: "PUT",
     body: JSON.stringify({ bri: bri, transitiontime: transitionTime / 100 }),
@@ -41,7 +69,7 @@ export async function hueLightSetState(lightid:number, state:boolean, transition
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
   const apiUrl =
-    "/hue-api-proxy/" + ip + "/" + bridgeAuth + "/lights/" + lightid + "/state";
+  getApiUrl() + bridgeAuth + "/lights/" + lightid + "/state";
   const res = await fetch(apiUrl, {
     method: "PUT",
     body: JSON.stringify({ on: state, transitiontime: transitionTime / 100 }),
@@ -60,7 +88,7 @@ export async function hueLightSetColor(
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
   const apiUrl =
-    "/hue-api-proxy/" + ip + "/" + bridgeAuth + "/lights/" + lightid + "/state";
+  getApiUrl() + bridgeAuth + "/lights/" + lightid + "/state";
   const res = await fetch(apiUrl, {
     method: "PUT",
     body: JSON.stringify({
@@ -78,7 +106,7 @@ export async function hueLightSetKelvin(lightid:number, state:boolean, ct:number
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
   const apiUrl =
-    "/hue-api-proxy/" + ip + "/" + bridgeAuth + "/lights/" + lightid + "/state";
+  getApiUrl() + bridgeAuth + "/lights/" + lightid + "/state";
   const res = await fetch(apiUrl, {
     method: "PUT",
     body: JSON.stringify({
