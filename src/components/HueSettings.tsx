@@ -25,19 +25,25 @@ export function HueSettingsConnectNewBridge() {
 }
 
 export function HueSettingsProxyToggle() {
-  const [proxyOn, setProxyOn] = useState(
-    localStorage.getItem("proxy") == "true"
-  );
+  const [proxyOn, setProxyOn] = useState(Boolean);
 
-    const handleHueSettingsProxyToggle = (proxyOn: boolean) => {
-        if (proxyOn == true) {
-          localStorage.setItem("proxy", "false");
-          setProxyOn(false);
-        } else {
-          localStorage.setItem("proxy", "true");
-          setProxyOn(true);
-        }
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setProxyOn(localStorage.getItem("proxy") == "true");
     }
+  });
+
+  const handleHueSettingsProxyToggle = (proxyOn: boolean) => {
+    if (typeof window !== "undefined") {
+      if (proxyOn == true) {
+        localStorage.setItem("proxy", "false");
+        setProxyOn(false);
+      } else {
+        localStorage.setItem("proxy", "true");
+        setProxyOn(true);
+      }
+    }
+  };
 
   return (
     <ListItemButton
@@ -53,9 +59,14 @@ export function HueSettingsProxyToggle() {
   );
 }
 
-
 export function HueSettingsSslToggle() {
-  const [sslOn, setSslOn] = useState(localStorage.getItem("ssl") == "true");
+  const [sslOn, setSslOn] = useState(Boolean);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setSslOn(localStorage.getItem("ssl") == "true");
+    }
+  });
 
   const handleHueSettingsSslToggle = (sslOn: boolean) => {
     if (typeof window !== "undefined") {
@@ -67,7 +78,7 @@ export function HueSettingsSslToggle() {
         setSslOn(true);
       }
     }
-  }
+  };
 
   return (
     <ListItemButton

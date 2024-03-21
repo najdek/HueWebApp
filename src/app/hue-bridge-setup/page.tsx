@@ -31,14 +31,8 @@ export default function HueBridgeSetupPage() {
     } else {
       if (out.success) {
         if (typeof window !== "undefined") {
-
-localStorage.setItem("bridgeIp", ipInput);
-
-        }
-
-        if (typeof window !== "undefined") {
+          localStorage.setItem("bridgeIp", ipInput);
           localStorage.setItem("bridgeAuth", out.success.username);
-
         }
           outputText = "Bridge connected!";
           push("/hue-main");
