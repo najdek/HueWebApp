@@ -23,6 +23,7 @@ import ContrastIcon from "@mui/icons-material/Contrast";
 
 import { fetchHueData } from "@/app/hue-main/hue";
 import { SwitchBaseProps } from "@mui/material/internal/SwitchBase";
+import dynamic from "next/dynamic";
 
 const CustomSlider = styled(Slider)({
   color: "#00000000",
@@ -375,7 +376,7 @@ export function Group(o:any) {
   );
 }
 
-export function DrawAllLights(o:any) {
+export function DrawAllLightsNoSSR(o:any) {
   let data = o.data;
   let groups = [];
   for (var obj in data) {
@@ -424,8 +425,12 @@ export function DrawAllLights(o:any) {
   }
   return <>{groups}</>;
 }
+export const DrawAllLights:any = dynamic(() => Promise.resolve(DrawAllLightsNoSSR), {
+  ssr: false,
+})
 
-export function DrawAllGroups(o:any) {
+
+function DrawAllGroupsNoSSR(o:any) {
   let data = o.data;
   console.log(data);
   let groups = [];
@@ -483,3 +488,6 @@ export function DrawAllGroups(o:any) {
   }
   return <>{groups}</>;
 }
+export const DrawAllGroups:any = dynamic(() => Promise.resolve(DrawAllGroupsNoSSR), {
+  ssr: false,
+})
