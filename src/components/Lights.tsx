@@ -129,7 +129,7 @@ export function Light(o:any) {
   };
 
   const handleBrightnessChange = (vent: Event | SyntheticEvent<Element, Event>, value: number | any) => {
-    let newValue = value.isArray() ? value[0] : value;
+    let newValue = value;
     let newBri = Math.round((newValue * 255) / 100);
     hueLightSetBrightness(o.id, newBri, 200);
     setSnackbarOpen(false);
