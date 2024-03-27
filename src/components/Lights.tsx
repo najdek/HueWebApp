@@ -1,29 +1,14 @@
 "use client";
 
-import { xyToRgb } from "@/app/colors";
-import { rgbToHex } from "@/app/colors";
-import { hsvToRgb } from "@/app/colors";
-import { hexToHs } from "@/app/colors";
-import { kelvinToCt } from "@/app/colors";
-import { ctToPickerKelvin } from "@/app/colors";
-import { kelvinToRgb } from "@/app/colors";
-import { ctToHex } from "@/app/colors";
-import { lightOrDark } from "@/app/colors";
-
-import { IconButton, Slider, styled, Switch, SwitchProps } from "@mui/material";
-
-import { hueLightSetBrightness, hueLightSetState } from "@/app/hue-main/hue";
-import { ReactEventHandler, SyntheticEvent, useState } from "react";
-
-import { Snackbar } from "@mui/material";
-import switchBaseClasses from "@mui/material/internal/switchBaseClasses";
+import { xyToRgb, hsvToRgb, ctToHex, lightOrDark } from "@/app/colors";
+import { IconButton, Slider, styled, Switch, SwitchProps, Snackbar } from "@mui/material";
+import { hueLightSetBrightness, hueLightSetState, fetchHueData } from "@/app/hue-main/hue";
 import { ColorPicker, KelvinPicker } from "./IroPicker";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import ContrastIcon from "@mui/icons-material/Contrast";
-
-import { fetchHueData } from "@/app/hue-main/hue";
-import { SwitchBaseProps } from "@mui/material/internal/SwitchBase";
 import dynamic from "next/dynamic";
+import { SyntheticEvent, useState } from "react";
+
 
 const CustomSlider = styled(Slider)({
   color: "#00000000",
@@ -116,7 +101,10 @@ const StyledSwitch = styled((props: SwitchProps) => (
   },
 }));
 
-export function Light(props:any) {
+
+
+
+export function Light(props: any) {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [switchChecked, setSwitchChecked] = useState(false);
@@ -132,10 +120,16 @@ export function Light(props:any) {
   const handleBrightnessChange = (vent: Event | SyntheticEvent<Element, Event>, value: number | any) => {
     let newValue = value;
     let newBri = Math.round((newValue * 255) / 100);
-    hueLightSetBrightness(props.id, newBri, 200);
+    if (props.mode == "group") {
+      for (let i = 0; i < props.ids.length; i++) {
+        hueLightSetBrightness(props.ids[i], newBri, 200);
+      }
+    } else {
+      hueLightSetBrightness(props.id, newBri, 200);
+    }
     setSnackbarOpen(false);
     setSnackbarText(
-      "Changing brightness of Light [" + props.name + "] to " + value + "%"
+      "Changing brightness of " + props.mode + " [" + props.name + "] to " + value + "%"
     );
     setSnackbarOpen(true);
     fetchHueData(setHueLightsData, setHueGroupsData);
@@ -144,10 +138,16 @@ export function Light(props:any) {
   const handleSwitch = (event: any) => {
     let newState = event.target.checked;
     setSwitchChecked(newState);
-    hueLightSetState(props.id, newState, 200);
+    if (props.mode == "group") {
+      for (let i = 0; i < props.ids.length; i++) {
+        hueLightSetState(props.ids[i], newState, 200);
+      }
+    } else {
+      hueLightSetState(props.id, newState, 200);
+    }
     setSnackbarOpen(false);
     setSnackbarText(
-      "Toggling Light [" + props.name + "]. New state: " + (newState ? "ON" : "OFF")
+      "Toggling " + props.mode + " [" + props.name + "]. New state: " + (newState ? "ON" : "OFF")
     );
     setSnackbarOpen(true);
     fetchHueData(setHueLightsData, setHueGroupsData);
@@ -156,9 +156,8 @@ export function Light(props:any) {
   return (
     <>
       <div
-        className={`min-h-20 w-full flex rounded-t-md ${
-          props.isDark ? "text-white" : "text-black"
-        }`}
+        className={`min-h-20 w-full flex rounded-t-md ${props.isDark ? "text-white" : "text-black"
+          }`}
         style={{
           backgroundColor: "#" + props.color,
           transition: "background-color 500ms linear",
@@ -171,16 +170,16 @@ export function Light(props:any) {
           <div className="inline-flex justify-end items-center space-x-4">
             {/* buttons */}
             <div onClick={() => setKelvinPickerOpen(true)}>
-            <IconButton
-              aria-label="set color temperature"
-            >
-              <ContrastIcon className={props.isDark ? "text-white" : "text-black"} />
-            </IconButton>
+              <IconButton
+                aria-label="set color temperature"
+              >
+                <ContrastIcon className={props.isDark ? "text-white" : "text-black"} />
+              </IconButton>
             </div>
             <div onClick={() => setColorPickerOpen(true)}>
-            <IconButton aria-label="set color">
-              <ColorLensIcon className={props.isDark ? "text-white" : "text-black"} />
-            </IconButton>
+              <IconButton aria-label="set color">
+                <ColorLensIcon className={props.isDark ? "text-white" : "text-black"} />
+              </IconButton>
             </div>
             <StyledSwitch checked={props.isOn} onChange={handleSwitch} />
           </div>
@@ -188,9 +187,8 @@ export function Light(props:any) {
       </div>
       {/* brightness slider */}
       <div
-        className={`w-full flex rounded-b-md bg-gradient-to-r from-gray-800 mb-4 px-4 ${
-          props.isDark ? "text-white" : "text-black"
-        }`}
+        className={`w-full flex rounded-b-md bg-gradient-to-r from-gray-800 mb-4 px-4 ${props.isDark ? "text-white" : "text-black"
+          }`}
         style={{ backgroundColor: "#" + props.color }}
       >
         <CustomSlider
@@ -218,6 +216,7 @@ export function Light(props:any) {
       />
       <ColorPicker
         id={props.id}
+        ids={props.ids}
         setColorPickerOpen={setColorPickerOpen}
         colorPickerOpen={colorPickerOpen}
         colormode={props.colormode}
@@ -230,138 +229,6 @@ export function Light(props:any) {
 
       <KelvinPicker
         id={props.id}
-        kelvinPickerOpen={kelvinPickerOpen}
-        setKelvinPickerOpen={setKelvinPickerOpen}
-        colormode={props.colormode}
-        color={props.color}
-        ct={props.ct}
-        mode="kelvin"
-        setHueLightsData={props.setHueLightsData}
-        setHueGroupsData={props.setHueGroupsData}
-      />
-    </>
-  );
-}
-
-export function Group(props:any) {
-  const [snackbarText, setSnackbarText] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [switchChecked, setSwitchChecked] = useState(props.isOn);
-  const [colorPickerOpen, setColorPickerOpen] = useState(false);
-  const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
-  const setHueLightsData = props.setHueLightsData;
-  const setHueGroupsData = props.setHueGroupsData;
-
-  const handleSnackbarClose = function () {
-    setSnackbarOpen(false);
-  };
-
-  const handleBrightnessChange = (vent: Event | SyntheticEvent<Element, Event>, value: number | any) => {
-    let newBri = Math.round((value * 255) / 100);
-    for (let i = 0; i < props.ids.length; i++) {
-      hueLightSetBrightness(props.ids[i], newBri, 200);
-    }
-    setSnackbarOpen(false);
-    setSnackbarText(
-      "Changing brightness of Group [" + props.name + "] to " + value + "%"
-    );
-    setSnackbarOpen(true);
-    fetchHueData(setHueLightsData, setHueGroupsData);
-  };
-
-  const handleSwitch = (event:any) => {
-    let newState = event.target.checked;
-    setSwitchChecked(newState);
-    for (let i = 0; i < props.ids.length; i++) {
-      hueLightSetState(props.ids[i], newState, 200);
-    }
-    setSnackbarOpen(false);
-    setSnackbarText(
-      "Toggling Group [" + props.name + "]. New state: " + (newState ? "ON" : "OFF")
-    );
-    setSnackbarOpen(true);
-    fetchHueData(setHueLightsData, setHueGroupsData);
-  };
-
-  return (
-    <>
-      <div
-        className={`min-h-20 w-full flex rounded-t-md ${
-          props.isDark ? "text-white" : "text-black"
-        }`}
-        style={{
-          backgroundColor: "#" + props.color,
-          transition: "background-color 500ms linear",
-        }}
-      >
-        <div className="flex justify-between items-center w-full min-h-max px-6">
-          <div className="inline-flex justify-start text-2xl font-medium">
-            {props.name}
-          </div>
-          <div className="inline-flex justify-end items-center space-x-4">
-            {/* buttons */}
-            <div onClick={() => setKelvinPickerOpen(true)}>
-            <IconButton aria-label="set color temperature">
-              <ContrastIcon
-                className={props.isDark ? "text-white" : "text-black"}
-              />
-            </IconButton>
-            </div>
-            <div onClick={() => setColorPickerOpen(true)}>
-            <IconButton aria-label="set color">
-              <ColorLensIcon
-                className={props.isDark ? "text-white" : "text-black"}
-              />
-            </IconButton>
-            </div>
-
-            <StyledSwitch checked={props.isOn} onChange={handleSwitch} />
-          </div>
-        </div>
-      </div>
-      {/* brightness slider */}
-      <div
-        className={`w-full flex rounded-b-md bg-gradient-to-r from-gray-800 mb-4 px-4 ${
-          props.isDark ? "text-white" : "text-black"
-        }`}
-        style={{ backgroundColor: "#" + props.color }}
-      >
-        <CustomSlider
-          key={`bri-slider-group-${props.id}`}
-          sx={{
-            '& input[type="range"]': {
-              WebkitAppearance: "slider-horizontal",
-            },
-          }}
-          orientation="horizontal"
-          value={props.lightBrightness}
-          step={1}
-          min={0}
-          max={100}
-          aria-label="Brightness"
-          valueLabelDisplay="auto"
-          onChangeCommitted={handleBrightnessChange}
-        />
-      </div>
-      <Snackbar
-        autoHideDuration={800}
-        open={snackbarOpen}
-        onClose={handleSnackbarClose}
-        message={snackbarText}
-      />
-      <ColorPicker
-        ids={props.ids}
-        setColorPickerOpen={setColorPickerOpen}
-        colorPickerOpen={colorPickerOpen}
-        colormode={props.colormode}
-        color={props.color}
-        ct={props.ct}
-        mode="color"
-        setHueLightsData={props.setHueLightsData}
-        setHueGroupsData={props.setHueGroupsData}
-      />
-
-      <KelvinPicker
         ids={props.ids}
         kelvinPickerOpen={kelvinPickerOpen}
         setKelvinPickerOpen={setKelvinPickerOpen}
@@ -376,27 +243,44 @@ export function Group(props:any) {
   );
 }
 
-export function DrawAllLightsNoSSR(props:any) {
+
+export function DrawAllLightsNoSSR(props: any) {
   let data = props.data;
-  let groups = [];
+  let elements = [];
   for (var obj in data) {
     let key = Object.keys(data).indexOf(obj);
     let thisLight = data[obj];
     console.log(thisLight);
 
-    let hexcolor, isDark;
-    let ct = 0;
-    let colormode = thisLight.state.colormode;
-    if (colormode == "ct") {
-      ct = thisLight.state.ct;
-      hexcolor = ctToHex(ct);
-    } else if (colormode == "hs") {
-      hexcolor = hsvToRgb(thisLight.state.hue, thisLight.state.sat);
-    } else if (colormode == "xy") {
-      hexcolor = xyToRgb(thisLight.state.xy[0], thisLight.state.xy[1]);
+    let lightState;
+
+    if (props.mode == "group") {
+      // group of lights
+      let groupType = thisLight.type;
+      if (groupType !== "Room" && groupType !== "Zone") {
+        continue;
+      }
+      lightState = thisLight.action;
+      var lightIds = thisLight.lights;
+    } else {
+      // single light
+      lightState = thisLight.state;
     }
 
-    if (thisLight.state.on == false) {
+
+    let hexcolor, isDark;
+    let ct = 0;
+    let colormode = lightState.colormode;
+    if (colormode == "ct") {
+      ct = lightState.ct;
+      hexcolor = ctToHex(ct);
+    } else if (colormode == "hs") {
+      hexcolor = hsvToRgb(lightState.hue, lightState.sat);
+    } else if (colormode == "xy") {
+      hexcolor = xyToRgb(lightState.xy[0], lightState.xy[1]);
+    }
+
+    if (lightState.on == false) {
       hexcolor = "999999";
     }
 
@@ -406,12 +290,14 @@ export function DrawAllLightsNoSSR(props:any) {
       isDark = true;
     }
 
-    let lightBrightness = Math.round((thisLight.state.bri / 255) * 100);
+    let lightBrightness = Math.round((lightState.bri / 255) * 100);
 
-    groups.push(
+    elements.push(
       <Light
         id={obj}
-        isOn={thisLight.state.on}
+        ids={lightIds || null}
+        mode={props.mode}
+        isOn={lightState.on}
         colormode={colormode}
         color={hexcolor}
         ct={ct}
@@ -423,71 +309,9 @@ export function DrawAllLightsNoSSR(props:any) {
       ></Light>
     );
   }
-  return <>{groups}</>;
+  return <>{elements}</>;
 }
-export const DrawAllLights:any = dynamic(() => Promise.resolve(DrawAllLightsNoSSR), {
+export const DrawAllLights: any = dynamic(() => Promise.resolve(DrawAllLightsNoSSR), {
   ssr: false,
 })
 
-
-function DrawAllGroupsNoSSR(props:any) {
-  let data = props.data;
-  console.log(data);
-  let groups = [];
-  for (var obj in data) {
-    let key = Object.keys(data).indexOf(obj);
-    let thisGroup = data[obj];
-    console.log(thisGroup);
-
-    let groupType = thisGroup.type;
-
-    if (groupType !== "Room" && groupType !== "Zone") {
-      continue;
-    }
-
-    let hexcolor, isDark;
-    let ct = 0;
-    let colormode = thisGroup.action.colormode;
-    if (colormode == "ct") {
-      ct = thisGroup.action.ct;
-      hexcolor = ctToHex(ct);
-    } else if (colormode == "hs") {
-      hexcolor = hsvToRgb(thisGroup.action.hue, thisGroup.action.sat);
-    } else if (colormode == "xy") {
-      hexcolor = xyToRgb(thisGroup.action.xy[0], thisGroup.action.xy[1]);
-    }
-
-    if (thisGroup.action.on == false) {
-      hexcolor = "999999";
-    }
-
-    if (lightOrDark(hexcolor) == "light") {
-      isDark = false;
-    } else {
-      isDark = true;
-    }
-
-    let lightBrightness = Math.round((thisGroup.averageBrightness / 255) * 100);
-
-    console.log("colormode: group " + obj + " " + colormode);
-    groups.push(
-      <Group
-        id={obj}
-        ids={thisGroup.lights}
-        isOn={thisGroup.action.on}
-        colormode={colormode}
-        color={hexcolor}
-        ct={ct}
-        name={thisGroup.name}
-        isDark={isDark}
-        lightBrightness={lightBrightness}
-        setHueLightsData={props.setHueLightsData}
-        setHueGroupsData={props.setHueGroupsData}
-      ></Group>
-    );
-  }
-  return <>{groups}</>;
-}
-export const DrawAllGroups:any = dynamic(() => Promise.resolve(DrawAllGroupsNoSSR), {
-  ssr: false,
-})

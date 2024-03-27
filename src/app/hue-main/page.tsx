@@ -51,26 +51,25 @@ export default function HueMain() {
       <Container className="pb-20 lg:pb-0" maxWidth="lg">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 overflow-hidden">
           <div
-            className={`${bottomNavValue == 0 ? "block" : "hidden lg:block"} ${
-              bottomNavValue >= 2 ? "lg:hidden" : ""
-            }`}
+            className={`${bottomNavValue == 0 ? "block" : "hidden lg:block"} ${bottomNavValue >= 2 ? "lg:hidden" : ""
+              }`}
           >
             <div className="mt-4 lg:mt-8 mb-4">
               <Typography variant="h5">Groups</Typography>
             </div>
             <div>
-              <DrawAllGroups
+              <DrawAllLights
+                data={hueGroupsData}
                 setHueLightsData={setHueLightsData}
                 setHueGroupsData={setHueGroupsData}
-                data={hueGroupsData}
-              ></DrawAllGroups>
+                mode="group"
+              ></DrawAllLights>
             </div>
           </div>
 
           <div
-            className={`${bottomNavValue == 1 ? "block" : "hidden lg:block"} ${
-              bottomNavValue >= 2 ? "lg:hidden" : ""
-            }`}
+            className={`${bottomNavValue == 1 ? "block" : "hidden lg:block"} ${bottomNavValue >= 2 ? "lg:hidden" : ""
+              }`}
           >
             <div className="mt-4 lg:mt-8 mb-4">
               <Typography variant="h5">Lights</Typography>
@@ -80,6 +79,7 @@ export default function HueMain() {
                 data={hueLightsData}
                 setHueLightsData={setHueLightsData}
                 setHueGroupsData={setHueGroupsData}
+                mode="light"
               ></DrawAllLights>
             </div>
           </div>
