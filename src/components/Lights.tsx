@@ -109,6 +109,7 @@ export function Light(props: any) {
   const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
   const setHueLightsData = props.setHueLightsData;
   const setHueGroupsData = props.setHueGroupsData;
+  const [brightnessSliderDragValue, setBrightnessSliderDragValue] = useState(-1);
 
   var ids:Array<number>;
   if (props.mode == "group") {
@@ -121,9 +122,18 @@ export function Light(props: any) {
     setSnackbarOpen(false);
   };
 
-  const handleBrightnessChange = (vent: Event | SyntheticEvent<Element, Event>, value: number | any) => {
+  const handleBrightnessChange = (event: Event, value: number | any, activeThumb: number) => {
+    setBrightnessSliderDragValue(value);
+  }
+
+  const handleBrightnessChangeCommited = (event: Event | SyntheticEvent<Element, Event>, value: number | any) => {
     let newValue = value;
     let newBri = Math.round((newValue * 255) / 100);
+    setTimeout(() => {
+      // delay, so it doesn't change slider value immediately
+      // after releasing it (before getting new data from bridge)
+      setBrightnessSliderDragValue(-1);
+    }, 3000);
 
     for (let i = 0; i < ids.length; i++) {
       hueLightSetBrightness(ids[i], newBri, 200);
@@ -198,13 +208,14 @@ export function Light(props: any) {
             },
           }}
           orientation="horizontal"
-          value={props.lightBrightness}
+          value={brightnessSliderDragValue > -1 ? brightnessSliderDragValue : props.lightBrightness}
           step={1}
           min={0}
           max={100}
           aria-label="Brightness"
           valueLabelDisplay="auto"
-          onChangeCommitted={handleBrightnessChange}
+          onChange={handleBrightnessChange}
+          onChangeCommitted={handleBrightnessChangeCommited}
         />
       </div>
       <Snackbar
