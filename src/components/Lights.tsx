@@ -9,7 +9,6 @@ import ContrastIcon from "@mui/icons-material/Contrast";
 import dynamic from "next/dynamic";
 import { SyntheticEvent, useState } from "react";
 
-
 const CustomSlider = styled(Slider)({
   color: "#00000000",
   height: 0,
@@ -102,16 +101,21 @@ const StyledSwitch = styled((props: SwitchProps) => (
 }));
 
 
-
-
 export function Light(props: any) {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [switchChecked, setSwitchChecked] = useState(false);
+  const [switchChecked, setSwitchChecked] = useState(props.isOn);
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
   const setHueLightsData = props.setHueLightsData;
   const setHueGroupsData = props.setHueGroupsData;
+
+  var ids:Array<number>;
+  if (props.mode == "group") {
+    ids = props.ids;
+  } else {
+    ids = [props.id];
+  }
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -120,13 +124,11 @@ export function Light(props: any) {
   const handleBrightnessChange = (vent: Event | SyntheticEvent<Element, Event>, value: number | any) => {
     let newValue = value;
     let newBri = Math.round((newValue * 255) / 100);
-    if (props.mode == "group") {
-      for (let i = 0; i < props.ids.length; i++) {
-        hueLightSetBrightness(props.ids[i], newBri, 200);
-      }
-    } else {
-      hueLightSetBrightness(props.id, newBri, 200);
+
+    for (let i = 0; i < ids.length; i++) {
+      hueLightSetBrightness(ids[i], newBri, 200);
     }
+
     setSnackbarOpen(false);
     setSnackbarText(
       "Changing brightness of " + props.mode + " [" + props.name + "] to " + value + "%"
@@ -138,13 +140,10 @@ export function Light(props: any) {
   const handleSwitch = (event: any) => {
     let newState = event.target.checked;
     setSwitchChecked(newState);
-    if (props.mode == "group") {
-      for (let i = 0; i < props.ids.length; i++) {
-        hueLightSetState(props.ids[i], newState, 200);
-      }
-    } else {
-      hueLightSetState(props.id, newState, 200);
+    for (let i = 0; i < ids.length; i++) {
+      hueLightSetState(ids[i], newState, 200);
     }
+
     setSnackbarOpen(false);
     setSnackbarText(
       "Toggling " + props.mode + " [" + props.name + "]. New state: " + (newState ? "ON" : "OFF")
@@ -181,7 +180,7 @@ export function Light(props: any) {
                 <ColorLensIcon className={props.isDark ? "text-white" : "text-black"} />
               </IconButton>
             </div>
-            <StyledSwitch checked={props.isOn} onChange={handleSwitch} />
+            <StyledSwitch checked={switchChecked} onChange={handleSwitch} />
           </div>
         </div>
       </div>
@@ -216,7 +215,7 @@ export function Light(props: any) {
       />
       <ColorPicker
         id={props.id}
-        ids={props.ids}
+        ids={ids}
         setColorPickerOpen={setColorPickerOpen}
         colorPickerOpen={colorPickerOpen}
         colormode={props.colormode}
@@ -229,7 +228,7 @@ export function Light(props: any) {
 
       <KelvinPicker
         id={props.id}
-        ids={props.ids}
+        ids={ids}
         kelvinPickerOpen={kelvinPickerOpen}
         setKelvinPickerOpen={setKelvinPickerOpen}
         colormode={props.colormode}

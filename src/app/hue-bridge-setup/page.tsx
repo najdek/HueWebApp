@@ -1,7 +1,7 @@
 "use client";
 import { Container, Typography, Button, TextField, List } from "@mui/material";
 import { bridgeNew } from "./bridge-new";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import React from "react";
 import { useRouter } from "next/navigation";
 import {

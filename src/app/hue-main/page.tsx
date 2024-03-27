@@ -1,25 +1,9 @@
 "use client";
-import {
-  Button,
-  Container,
-  Typography,
-  Snackbar,
-  BottomNavigation,
-  BottomNavigationAction,
-  Paper,
-  AppBar,
-  Toolbar,
-  Fab,
-} from "@mui/material";
-import { hueLightsGet, hueGroupsGet, fetchHueData } from "./hue";
-import { DrawAllLights, DrawAllGroups } from "@/components/Lights";
+import { Container, Typography, Fab } from "@mui/material";
+import { fetchHueData } from "./hue";
+import { DrawAllLights } from "@/components/Lights";
 import { useEffect, useState } from "react";
-import {
-  BatchPrediction,
-  Close,
-  Lightbulb,
-  Settings,
-} from "@mui/icons-material";
+import { Close, Settings } from "@mui/icons-material";
 import React from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { HueSettings } from "@/components/HueSettings";
@@ -27,8 +11,6 @@ import { HueSettings } from "@/components/HueSettings";
 export default function HueMain() {
   const [hueLightsData, setHueLightsData] = useState([]);
   const [hueGroupsData, setHueGroupsData] = useState([]);
-  const [snackbarText, setSnackbarText] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [bottomNavValue, setBottomNavValue] = useState(0);
 
   useEffect(() => {
@@ -51,8 +33,9 @@ export default function HueMain() {
       <Container className="pb-20 lg:pb-0" maxWidth="lg">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 overflow-hidden">
           <div
-            className={`${bottomNavValue == 0 ? "block" : "hidden lg:block"} ${bottomNavValue >= 2 ? "lg:hidden" : ""
-              }`}
+            className={`${bottomNavValue == 0 ? "block" : "hidden lg:block"} ${
+              bottomNavValue >= 2 ? "lg:hidden" : ""
+            }`}
           >
             <div className="mt-4 lg:mt-8 mb-4">
               <Typography variant="h5">Groups</Typography>
@@ -68,8 +51,9 @@ export default function HueMain() {
           </div>
 
           <div
-            className={`${bottomNavValue == 1 ? "block" : "hidden lg:block"} ${bottomNavValue >= 2 ? "lg:hidden" : ""
-              }`}
+            className={`${bottomNavValue == 1 ? "block" : "hidden lg:block"} ${
+              bottomNavValue >= 2 ? "lg:hidden" : ""
+            }`}
           >
             <div className="mt-4 lg:mt-8 mb-4">
               <Typography variant="h5">Lights</Typography>

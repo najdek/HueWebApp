@@ -1,8 +1,6 @@
 import { RestartAlt } from "@mui/icons-material";
 import {
-  Button,
   Checkbox,
-  Container,
   List,
   ListItem,
   ListItemButton,
@@ -31,7 +29,7 @@ export function HueSettingsProxyToggle() {
     if (typeof window !== "undefined") {
       setProxyOn(localStorage.getItem("proxy") == "true");
     }
-  });
+  }, []);
 
   const handleHueSettingsProxyToggle = (proxyOn: boolean) => {
     if (typeof window !== "undefined") {
@@ -66,7 +64,7 @@ export function HueSettingsSslToggle() {
     if (typeof window !== "undefined") {
       setSslOn(localStorage.getItem("ssl") == "true");
     }
-  });
+  }, []);
 
   const handleHueSettingsSslToggle = (sslOn: boolean) => {
     if (typeof window !== "undefined") {

@@ -10,7 +10,7 @@ export default function Home() {
     if (bridgeIp !== "") {
       push("/hue-main");
     }
-  }, []);
+  }, [push]);
 
   return (
     <main>
