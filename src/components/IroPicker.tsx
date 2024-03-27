@@ -128,9 +128,9 @@ class IroKelvinPicker extends React.Component {
   }
 }
 
-function PickerWrapper(o:any) {
+function PickerWrapper(props:any) {
   const handleColorPickerClose = () => {
-    o.setModalOpen(false);
+    props.setModalOpen(false);
   };
 
   const boxStyle = {
@@ -149,39 +149,39 @@ function PickerWrapper(o:any) {
     <Container maxWidth="sm">
       <Box sx={{ ...boxStyle }}>
         <div className="flex justify-between items-center mb-4">
-          <Typography variant="h5">{o.title}</Typography>
+          <Typography variant="h5">{props.title}</Typography>
           <IconButton onClick={handleColorPickerClose} aria-label="close">
             <Close />
           </IconButton>
         </div>
-        {o.children}
+        {props.children}
       </Box>
     </Container>
   );
 }
 
 
-export function ColorPicker(o:any) {
+export function ColorPicker(props:any) {
   const handleColorPickerClose = () => {
-    o.setColorPickerOpen(false);
+    props.setColorPickerOpen(false);
   };
 
   return (
     <>
-      <Modal open={o.colorPickerOpen} onClose={handleColorPickerClose}>
+      <Modal open={props.colorPickerOpen} onClose={handleColorPickerClose}>
         <PickerWrapper
-          setModalOpen={o.setColorPickerOpen}
+          setModalOpen={props.setColorPickerOpen}
           title={`Choose color`}
         >
           <IroColorPicker
             width={400}
-            id={o.id}
-            ids={o.ids}
-            colormode={o.colormode}
-            color={o.color}
-            ct={o.ct}
-            setHueLightsData={o.setHueLightsData}
-            setHueGroupsData={o.setHueGroupsData}
+            id={props.id}
+            ids={props.ids}
+            colormode={props.colormode}
+            color={props.color}
+            ct={props.ct}
+            setHueLightsData={props.setHueLightsData}
+            setHueGroupsData={props.setHueGroupsData}
           />
         </PickerWrapper>
       </Modal>
@@ -189,27 +189,27 @@ export function ColorPicker(o:any) {
   );
 }
 
-export function KelvinPicker(o:any) {
+export function KelvinPicker(props:any) {
   const handleKelvinPickerClose = () => {
-    o.setKelvinPickerOpen(false);
+    props.setKelvinPickerOpen(false);
   };
 
   return (
     <>
-      <Modal open={o.kelvinPickerOpen} onClose={handleKelvinPickerClose}>
+      <Modal open={props.kelvinPickerOpen} onClose={handleKelvinPickerClose}>
         <PickerWrapper
-          setModalOpen={o.setKelvinPickerOpen}
+          setModalOpen={props.setKelvinPickerOpen}
           title={`Choose color temperature`}
         >
           <IroKelvinPicker
             width={400}
-            id={o.id}
-            ids={o.ids}
-            colormode={o.colormode}
-            color={o.color}
-            ct={o.ct}
-            setHueLightsData={o.setHueLightsData}
-            setHueGroupsData={o.setHueGroupsData}
+            id={props.id}
+            ids={props.ids}
+            colormode={props.colormode}
+            color={props.color}
+            ct={props.ct}
+            setHueLightsData={props.setHueLightsData}
+            setHueGroupsData={props.setHueGroupsData}
           />
         </PickerWrapper>
       </Modal>

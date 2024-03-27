@@ -116,14 +116,14 @@ const StyledSwitch = styled((props: SwitchProps) => (
   },
 }));
 
-export function Light(o:any) {
+export function Light(props:any) {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [switchChecked, setSwitchChecked] = useState(false);
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
-  const setHueLightsData = o.setHueLightsData;
-  const setHueGroupsData = o.setHueGroupsData;
+  const setHueLightsData = props.setHueLightsData;
+  const setHueGroupsData = props.setHueGroupsData;
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -132,10 +132,10 @@ export function Light(o:any) {
   const handleBrightnessChange = (vent: Event | SyntheticEvent<Element, Event>, value: number | any) => {
     let newValue = value;
     let newBri = Math.round((newValue * 255) / 100);
-    hueLightSetBrightness(o.id, newBri, 200);
+    hueLightSetBrightness(props.id, newBri, 200);
     setSnackbarOpen(false);
     setSnackbarText(
-      "Changing brightness of Light [" + o.name + "] to " + value + "%"
+      "Changing brightness of Light [" + props.name + "] to " + value + "%"
     );
     setSnackbarOpen(true);
     fetchHueData(setHueLightsData, setHueGroupsData);
@@ -144,10 +144,10 @@ export function Light(o:any) {
   const handleSwitch = (event: any) => {
     let newState = event.target.checked;
     setSwitchChecked(newState);
-    hueLightSetState(o.id, newState, 200);
+    hueLightSetState(props.id, newState, 200);
     setSnackbarOpen(false);
     setSnackbarText(
-      "Toggling Light [" + o.name + "]. New state: " + (newState ? "ON" : "OFF")
+      "Toggling Light [" + props.name + "]. New state: " + (newState ? "ON" : "OFF")
     );
     setSnackbarOpen(true);
     fetchHueData(setHueLightsData, setHueGroupsData);
@@ -157,16 +157,16 @@ export function Light(o:any) {
     <>
       <div
         className={`min-h-20 w-full flex rounded-t-md ${
-          o.isDark ? "text-white" : "text-black"
+          props.isDark ? "text-white" : "text-black"
         }`}
         style={{
-          backgroundColor: "#" + o.color,
+          backgroundColor: "#" + props.color,
           transition: "background-color 500ms linear",
         }}
       >
         <div className="flex justify-between items-center w-full min-h-max px-6">
           <div className="inline-flex justify-start text-2xl font-medium">
-            {o.name}
+            {props.name}
           </div>
           <div className="inline-flex justify-end items-center space-x-4">
             {/* buttons */}
@@ -174,34 +174,34 @@ export function Light(o:any) {
             <IconButton
               aria-label="set color temperature"
             >
-              <ContrastIcon className={o.isDark ? "text-white" : "text-black"} />
+              <ContrastIcon className={props.isDark ? "text-white" : "text-black"} />
             </IconButton>
             </div>
             <div onClick={() => setColorPickerOpen(true)}>
             <IconButton aria-label="set color">
-              <ColorLensIcon className={o.isDark ? "text-white" : "text-black"} />
+              <ColorLensIcon className={props.isDark ? "text-white" : "text-black"} />
             </IconButton>
             </div>
-            <StyledSwitch checked={o.isOn} onChange={handleSwitch} />
+            <StyledSwitch checked={props.isOn} onChange={handleSwitch} />
           </div>
         </div>
       </div>
       {/* brightness slider */}
       <div
         className={`w-full flex rounded-b-md bg-gradient-to-r from-gray-800 mb-4 px-4 ${
-          o.isDark ? "text-white" : "text-black"
+          props.isDark ? "text-white" : "text-black"
         }`}
-        style={{ backgroundColor: "#" + o.color }}
+        style={{ backgroundColor: "#" + props.color }}
       >
         <CustomSlider
-          key={`bri-slider-light-${o.id}`}
+          key={`bri-slider-light-${props.id}`}
           sx={{
             '& input[type="range"]': {
               WebkitAppearance: "slider-horizontal",
             },
           }}
           orientation="horizontal"
-          value={o.lightBrightness}
+          value={props.lightBrightness}
           step={1}
           min={0}
           max={100}
@@ -217,40 +217,40 @@ export function Light(o:any) {
         message={snackbarText}
       />
       <ColorPicker
-        id={o.id}
+        id={props.id}
         setColorPickerOpen={setColorPickerOpen}
         colorPickerOpen={colorPickerOpen}
-        colormode={o.colormode}
-        color={o.color}
-        ct={o.ct}
+        colormode={props.colormode}
+        color={props.color}
+        ct={props.ct}
         mode="color"
-        setHueLightsData={o.setHueLightsData}
-        setHueGroupsData={o.setHueGroupsData}
+        setHueLightsData={props.setHueLightsData}
+        setHueGroupsData={props.setHueGroupsData}
       />
 
       <KelvinPicker
-        id={o.id}
+        id={props.id}
         kelvinPickerOpen={kelvinPickerOpen}
         setKelvinPickerOpen={setKelvinPickerOpen}
-        colormode={o.colormode}
-        color={o.color}
-        ct={o.ct}
+        colormode={props.colormode}
+        color={props.color}
+        ct={props.ct}
         mode="kelvin"
-        setHueLightsData={o.setHueLightsData}
-        setHueGroupsData={o.setHueGroupsData}
+        setHueLightsData={props.setHueLightsData}
+        setHueGroupsData={props.setHueGroupsData}
       />
     </>
   );
 }
 
-export function Group(o:any) {
+export function Group(props:any) {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [switchChecked, setSwitchChecked] = useState(o.isOn);
+  const [switchChecked, setSwitchChecked] = useState(props.isOn);
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
-  const setHueLightsData = o.setHueLightsData;
-  const setHueGroupsData = o.setHueGroupsData;
+  const setHueLightsData = props.setHueLightsData;
+  const setHueGroupsData = props.setHueGroupsData;
 
   const handleSnackbarClose = function () {
     setSnackbarOpen(false);
@@ -258,12 +258,12 @@ export function Group(o:any) {
 
   const handleBrightnessChange = (vent: Event | SyntheticEvent<Element, Event>, value: number | any) => {
     let newBri = Math.round((value * 255) / 100);
-    for (let i = 0; i < o.ids.length; i++) {
-      hueLightSetBrightness(o.ids[i], newBri, 200);
+    for (let i = 0; i < props.ids.length; i++) {
+      hueLightSetBrightness(props.ids[i], newBri, 200);
     }
     setSnackbarOpen(false);
     setSnackbarText(
-      "Changing brightness of Group [" + o.name + "] to " + value + "%"
+      "Changing brightness of Group [" + props.name + "] to " + value + "%"
     );
     setSnackbarOpen(true);
     fetchHueData(setHueLightsData, setHueGroupsData);
@@ -272,12 +272,12 @@ export function Group(o:any) {
   const handleSwitch = (event:any) => {
     let newState = event.target.checked;
     setSwitchChecked(newState);
-    for (let i = 0; i < o.ids.length; i++) {
-      hueLightSetState(o.ids[i], newState, 200);
+    for (let i = 0; i < props.ids.length; i++) {
+      hueLightSetState(props.ids[i], newState, 200);
     }
     setSnackbarOpen(false);
     setSnackbarText(
-      "Toggling Group [" + o.name + "]. New state: " + (newState ? "ON" : "OFF")
+      "Toggling Group [" + props.name + "]. New state: " + (newState ? "ON" : "OFF")
     );
     setSnackbarOpen(true);
     fetchHueData(setHueLightsData, setHueGroupsData);
@@ -287,54 +287,54 @@ export function Group(o:any) {
     <>
       <div
         className={`min-h-20 w-full flex rounded-t-md ${
-          o.isDark ? "text-white" : "text-black"
+          props.isDark ? "text-white" : "text-black"
         }`}
         style={{
-          backgroundColor: "#" + o.color,
+          backgroundColor: "#" + props.color,
           transition: "background-color 500ms linear",
         }}
       >
         <div className="flex justify-between items-center w-full min-h-max px-6">
           <div className="inline-flex justify-start text-2xl font-medium">
-            {o.name}
+            {props.name}
           </div>
           <div className="inline-flex justify-end items-center space-x-4">
             {/* buttons */}
             <div onClick={() => setKelvinPickerOpen(true)}>
             <IconButton aria-label="set color temperature">
               <ContrastIcon
-                className={o.isDark ? "text-white" : "text-black"}
+                className={props.isDark ? "text-white" : "text-black"}
               />
             </IconButton>
             </div>
             <div onClick={() => setColorPickerOpen(true)}>
             <IconButton aria-label="set color">
               <ColorLensIcon
-                className={o.isDark ? "text-white" : "text-black"}
+                className={props.isDark ? "text-white" : "text-black"}
               />
             </IconButton>
             </div>
 
-            <StyledSwitch checked={o.isOn} onChange={handleSwitch} />
+            <StyledSwitch checked={props.isOn} onChange={handleSwitch} />
           </div>
         </div>
       </div>
       {/* brightness slider */}
       <div
         className={`w-full flex rounded-b-md bg-gradient-to-r from-gray-800 mb-4 px-4 ${
-          o.isDark ? "text-white" : "text-black"
+          props.isDark ? "text-white" : "text-black"
         }`}
-        style={{ backgroundColor: "#" + o.color }}
+        style={{ backgroundColor: "#" + props.color }}
       >
         <CustomSlider
-          key={`bri-slider-group-${o.id}`}
+          key={`bri-slider-group-${props.id}`}
           sx={{
             '& input[type="range"]': {
               WebkitAppearance: "slider-horizontal",
             },
           }}
           orientation="horizontal"
-          value={o.lightBrightness}
+          value={props.lightBrightness}
           step={1}
           min={0}
           max={100}
@@ -350,34 +350,34 @@ export function Group(o:any) {
         message={snackbarText}
       />
       <ColorPicker
-        ids={o.ids}
+        ids={props.ids}
         setColorPickerOpen={setColorPickerOpen}
         colorPickerOpen={colorPickerOpen}
-        colormode={o.colormode}
-        color={o.color}
-        ct={o.ct}
+        colormode={props.colormode}
+        color={props.color}
+        ct={props.ct}
         mode="color"
-        setHueLightsData={o.setHueLightsData}
-        setHueGroupsData={o.setHueGroupsData}
+        setHueLightsData={props.setHueLightsData}
+        setHueGroupsData={props.setHueGroupsData}
       />
 
       <KelvinPicker
-        ids={o.ids}
+        ids={props.ids}
         kelvinPickerOpen={kelvinPickerOpen}
         setKelvinPickerOpen={setKelvinPickerOpen}
-        colormode={o.colormode}
-        color={o.color}
-        ct={o.ct}
+        colormode={props.colormode}
+        color={props.color}
+        ct={props.ct}
         mode="kelvin"
-        setHueLightsData={o.setHueLightsData}
-        setHueGroupsData={o.setHueGroupsData}
+        setHueLightsData={props.setHueLightsData}
+        setHueGroupsData={props.setHueGroupsData}
       />
     </>
   );
 }
 
-export function DrawAllLightsNoSSR(o:any) {
-  let data = o.data;
+export function DrawAllLightsNoSSR(props:any) {
+  let data = props.data;
   let groups = [];
   for (var obj in data) {
     let key = Object.keys(data).indexOf(obj);
@@ -418,8 +418,8 @@ export function DrawAllLightsNoSSR(o:any) {
         name={thisLight.name}
         isDark={isDark}
         lightBrightness={lightBrightness}
-        setHueLightsData={o.setHueLightsData}
-        setHueGroupsData={o.setHueGroupsData}
+        setHueLightsData={props.setHueLightsData}
+        setHueGroupsData={props.setHueGroupsData}
       ></Light>
     );
   }
@@ -430,8 +430,8 @@ export const DrawAllLights:any = dynamic(() => Promise.resolve(DrawAllLightsNoSS
 })
 
 
-function DrawAllGroupsNoSSR(o:any) {
-  let data = o.data;
+function DrawAllGroupsNoSSR(props:any) {
+  let data = props.data;
   console.log(data);
   let groups = [];
   for (var obj in data) {
@@ -481,8 +481,8 @@ function DrawAllGroupsNoSSR(o:any) {
         name={thisGroup.name}
         isDark={isDark}
         lightBrightness={lightBrightness}
-        setHueLightsData={o.setHueLightsData}
-        setHueGroupsData={o.setHueGroupsData}
+        setHueLightsData={props.setHueLightsData}
+        setHueGroupsData={props.setHueGroupsData}
       ></Group>
     );
   }
