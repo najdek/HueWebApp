@@ -65,14 +65,14 @@ export async function hueLightSetBrightness(lightid:number, bri:number, transiti
   return data;
 }
 
-export async function hueLightSetState(lightid:number, state:boolean, transitionTime:number) {
+export async function hueLightSetState(lightid:number, state:boolean) {
   const ip = localStorage.getItem("bridgeIp");
   const bridgeAuth = localStorage.getItem("bridgeAuth");
   const apiUrl =
   getApiUrl() + bridgeAuth + "/lights/" + lightid + "/state";
   const res = await fetch(apiUrl, {
     method: "PUT",
-    body: JSON.stringify({ on: state, transitiontime: transitionTime / 100 }),
+    body: JSON.stringify({ on: state }),
   });
   const data = await res.json();
   return data;

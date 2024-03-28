@@ -104,7 +104,7 @@ const StyledSwitch = styled((props: SwitchProps) => (
 export function Light(props: any) {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [switchChecked, setSwitchChecked] = useState(props.isOn);
+  const [switchChecked, setSwitchChecked] = useState(-1);
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const [kelvinPickerOpen, setKelvinPickerOpen] = useState(false);
   const setHueLightsData = props.setHueLightsData;
@@ -150,8 +150,13 @@ export function Light(props: any) {
   const handleSwitch = (event: any) => {
     let newState = event.target.checked;
     setSwitchChecked(newState);
+    setTimeout(() => {
+      // delay, so it doesn't change switch value immediately
+      // after clicking it (before getting new data from bridge)
+      setSwitchChecked(-1);
+    }, 3000);
     for (let i = 0; i < ids.length; i++) {
-      hueLightSetState(ids[i], newState, 200);
+      hueLightSetState(ids[i], newState);
     }
 
     setSnackbarOpen(false);
@@ -190,7 +195,7 @@ export function Light(props: any) {
                 <ColorLensIcon className={props.isDark ? "text-white" : "text-black"} />
               </IconButton>
             </div>
-            <StyledSwitch checked={switchChecked} onChange={handleSwitch} />
+            <StyledSwitch checked={switchChecked > -1 ? switchChecked : props.isOn} onChange={handleSwitch} />
           </div>
         </div>
       </div>
