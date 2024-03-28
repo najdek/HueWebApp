@@ -37,10 +37,10 @@ class IroColorPicker extends React.Component {
 
       if (props.ids) {
         for (let i = 0; i < props.ids.length; i++) {
-          hueLightSetColor(props.ids[i], true, hue, sat, 400);
+          hueLightSetColor(props.ids[i], true, hue, sat);
         }
       } else {
-        hueLightSetColor(props.id, true, hue, sat, 400);
+        hueLightSetColor(props.id, true, hue, sat);
       }
       fetchHueData(setHueLightsData, setHueGroupsData);
     });
@@ -101,10 +101,10 @@ class IroKelvinPicker extends React.Component {
 
       if (props.ids) {
         for (let i = 0; i < props.ids.length; i++) {
-          hueLightSetKelvin(props.ids[i], true, ct, 400);
+          hueLightSetKelvin(props.ids[i], true, ct);
         }
       } else {
-        hueLightSetKelvin(props.id, true, ct, 400);
+        hueLightSetKelvin(props.id, true, ct);
       }
       fetchHueData(setHueLightsData, setHueGroupsData);
     });

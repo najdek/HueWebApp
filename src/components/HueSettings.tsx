@@ -1,24 +1,27 @@
-import { RestartAlt } from "@mui/icons-material";
+import { defaultTransitionTime } from "@/app/hue-main/hue";
+import { Flare, RestartAlt } from "@mui/icons-material";
 import {
   Checkbox,
   List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export function HueSettingsConnectNewBridge() {
   return (
-    <ListItem disablePadding>
-      <ListItemButton href="/hue-bridge-setup">
-        <ListItemIcon>
+    <ListItemButton
+    href="/hue-bridge-setup"
+        >
+              <ListItemIcon>
           <RestartAlt />
         </ListItemIcon>
+
         <ListItemText primary="Connect to another Hue Bridge" />
-      </ListItemButton>
-    </ListItem>
+    </ListItemButton>
   );
 }
 
@@ -45,9 +48,7 @@ export function HueSettingsProxyToggle() {
 
   return (
     <ListItemButton
-      role={undefined}
       onClick={() => handleHueSettingsProxyToggle(proxyOn)}
-      dense
     >
       <ListItemIcon>
         <Checkbox edge="start" checked={proxyOn} tabIndex={-1} disableRipple />
@@ -80,14 +81,58 @@ export function HueSettingsSslToggle() {
 
   return (
     <ListItemButton
-      role={undefined}
       onClick={() => handleHueSettingsSslToggle(sslOn)}
-      dense
     >
       <ListItemIcon>
         <Checkbox edge="start" checked={sslOn} tabIndex={-1} disableRipple />
       </ListItemIcon>
       <ListItemText primary={`Use SSL for bridge connection`} />
+    </ListItemButton>
+  );
+}
+
+export function HueSettingsTransitionTime() {
+  const [transitionTime, setTransitionTime] = useState(defaultTransitionTime);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let savedTransitionTime = parseInt(localStorage.getItem("transitionTime") || defaultTransitionTime.toString());
+      setTransitionTime(savedTransitionTime);
+    }
+  }, []);
+
+  const handleHueSettingsTransitionTimeChange = (event: { target: { value: any; }; }) => {
+    if (typeof window !== "undefined") {
+        let newTransitionTime = event.target.value;
+        localStorage.setItem("transitionTime", newTransitionTime.toString());
+        setTransitionTime(newTransitionTime);
+    }
+  };
+
+  return (
+    <ListItemButton>
+      <ListItemIcon>
+        <Flare />
+      </ListItemIcon>
+      <ListItemText primary={`Change light transition time:`} />
+
+      <Select
+        value={transitionTime}
+        onChange={handleHueSettingsTransitionTimeChange}
+        size="small"
+      >
+        <MenuItem value={0}>Instant</MenuItem>
+        <MenuItem value={100}>0.1s</MenuItem>
+        <MenuItem value={200}>0.2s</MenuItem>
+        <MenuItem value={300}>0.3s</MenuItem>
+        <MenuItem value={400}>0.4s</MenuItem>
+        <MenuItem value={500}>0.5s</MenuItem>
+        <MenuItem value={600}>0.6s</MenuItem>
+        <MenuItem value={700}>0.7s</MenuItem>
+        <MenuItem value={800}>0.8s</MenuItem>
+        <MenuItem value={900}>0.9s</MenuItem>
+        <MenuItem value={1000}>1.0s</MenuItem>
+      </Select>
     </ListItemButton>
   );
 }
@@ -98,6 +143,7 @@ export function HueSettings() {
       <HueSettingsConnectNewBridge />
       <HueSettingsProxyToggle />
       <HueSettingsSslToggle />
+      <HueSettingsTransitionTime />
     </List>
   );
 }

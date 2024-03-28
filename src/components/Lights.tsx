@@ -136,7 +136,7 @@ export function Light(props: any) {
     }, 3000);
 
     for (let i = 0; i < ids.length; i++) {
-      hueLightSetBrightness(ids[i], newBri, 200);
+      hueLightSetBrightness(ids[i], newBri);
     }
 
     setSnackbarOpen(false);
