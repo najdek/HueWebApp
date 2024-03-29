@@ -304,8 +304,8 @@ export function DrawAllLightsNoSSR(props: any) {
     } else {
       isDark = true;
     }
-
-    let lightBrightness = Math.round((lightState.bri / 255) * 100);
+    
+    let lightBrightness = Math.round(((thisLight.averageBrightness || lightState.bri) / 255) * 100);
 
     elements.push(
       <Light
